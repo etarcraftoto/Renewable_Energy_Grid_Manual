@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>台電配電級再生能源併網與報竣工數位管理平台（114.03.11修訂版）</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Fonts: Inter & Noto Sans TC -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', '"Inter"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#0F172A',
+              primary: '#0369A1',
+              emerald: '#047857',
+              amber: '#D97706'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --base-font-size: 18.4px; /* 預設 115% 舒適大字 */
+      --print-font-size: 12.5pt;
+    }
+
+    html {
+      font-size: var(--base-font-size);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background-color: #F8FAFC;
+      color: #0F172A;
+      line-height: 1.72;
+      letter-spacing: 0.015em;
+    }
+
+    /* 確保小字級隨根元素等比例放大，高對比清晰易讀 */
+    .text-\[11px\], .text-\[10px\] {
+      font-size: 0.86rem !important;
+      line-height: 1.55 !important;
+    }
+    .text-xs {
+      font-size: 0.92rem !important;
+      line-height: 1.65 !important;
+    }
+    .text-sm {
+      font-size: 1rem !important;
+      line-height: 1.72 !important;
+    }
+    .text-base {
+      font-size: 1.12rem !important;
+      line-height: 1.7 !important;
+    }
+    .text-lg {
+      font-size: 1.25rem !important;
+      line-height: 1.6 !important;
+    }
+    .text-xl {
+      font-size: 1.4rem !important;
+      line-height: 1.5 !important;
+    }
+    .text-slate-400 {
+      color: #475569 !important;
+    }
+    .text-slate-500 {
+      color: #334155 !important;
+    }
+
+    /* 列印專用樣式 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      html {
+        font-size: var(--print-font-size) !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: var(--print-font-size) !important;
+        line-height: 1.55 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only-container {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .print-break-inside-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #000000 !important;
+        padding: 6px 8px !important;
+        font-size: var(--print-font-size) !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- 頂部常駐導覽與護眼大字體控制器 (列印時隱藏) -->
+  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- 品牌識別 -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-xl shadow shrink-0">
+          <i class="fa-solid fa-solar-panel"></i>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs px-2 py-0.5 rounded font-bold">再生能源業者／承裝業／電機技師專用</span>
+            <h1 class="text-base sm:text-lg font-bold tracking-wide">台電配電級再生能源併網與報竣工數位管理平台</h1>
+          </div>
+          <p class="text-xs text-slate-300 mt-0.5">依據《台電配電手冊（八）再生能源篇（114.03.11修訂版）》｜架構式卡片・點開看細節・一鍵輸出勾稽表</p>
+        </div>
+      </div>
+
+      <!-- 右側：護眼字體自由縮放控制器 ＋ 進度條與快捷列印 -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- 字體縮放控制器 -->
+        <div class="bg-slate-800 px-3 py-1.5 rounded-xl border border-amber-400/50 flex flex-wrap items-center gap-2 shadow-inner">
+          <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
+            <i class="fa-solid fa-text-height"></i>
+            <span>字體大小：</span>
+          </span>
+          <button type="button" onclick="stepFontScale(-10)" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition" title="縮小文字">
+            A-
+          </button>
+          <div class="hidden md:flex items-center gap-1">
+            <button type="button" onclick="setFontScale(100)" id="fontBtn_100" class="px-2 py-1 rounded text-xs font-bold transition">標準 100%</button>
+            <button type="button" onclick="setFontScale(115)" id="fontBtn_115" class="px-2 py-1 rounded text-xs font-bold transition">舒適大字 115%</button>
+            <button type="button" onclick="setFontScale(130)" id="fontBtn_130" class="px-2 py-1 rounded text-xs font-bold transition">超大護眼 130%</button>
+            <button type="button" onclick="setFontScale(145)" id="fontBtn_145" class="px-2 py-1 rounded text-xs font-bold transition">特大 145%</button>
+          </div>
+          <button type="button" onclick="stepFontScale(10)" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition" title="放大文字">
+            A+
+          </button>
+          <input type="range" id="fontScaleSlider" min="90" max="160" step="5" value="115" oninput="setFontScale(this.value)" class="w-20 accent-amber-400 cursor-pointer" title="拖曳調整文字大小">
+          <span id="fontScaleLabel" class="text-xs font-mono font-bold text-amber-300 w-12 text-right">115%</span>
+        </div>
+
+        <!-- 勾稽進度與列印入口 -->
+        <div class="bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-700 flex items-center gap-3">
+          <div class="text-xs">
+            <span class="text-slate-300 block">本案業者自主勾稽進度</span>
+            <span id="headerProgressText" class="font-bold text-emerald-400 text-sm">0 / 0 項 (0%)</span>
+          </div>
+          <div class="w-16 sm:w-20 bg-slate-700 h-2.5 rounded-full overflow-hidden">
+            <div id="headerProgressBar" class="bg-emerald-400 h-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+        <button onclick="switchTab('print')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs sm:text-sm shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i>
+          <span>A4 勾稽表列印</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 主功能四大分頁切換列 -->
+    <div class="bg-slate-800/95 border-t border-slate-700/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto py-1.5 gap-2">
+        <button onclick="switchTab('overview')" id="tabBtn_overview" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i>
+          <span>1. 架構總覽與併網通則</span>
+        </button>
+        <button onclick="switchTab('guide')" id="tabBtn_guide" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>2. 案場類型分級檢核（屋頂／地面／併內線／共同升壓站／光儲）</span>
+        </button>
+        <button onclick="switchTab('print')" id="tabBtn_print" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2">
+          <i class="fa-solid fa-file-signature"></i>
+          <span>3. A4 勾稽表設定與列印中心</span>
+        </button>
+        <button onclick="switchTab('tools')" id="tabBtn_tools" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2">
+          <i class="fa-solid fa-calculator"></i>
+          <span>4. 業者實務試算與期限工具箱</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 浮動通知容器 -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 no-print pointer-events-none"></div>
+
+  <!-- 主內容區 (列印時隱藏) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 no-print">
+
+    <!-- =========================================================================
+         分頁 1：架構總覽與併網通則
+         ========================================================================= -->
+    <section id="tabContent_overview" class="space-y-8">
+
+      <!-- 頂部引導橫幅 -->
+      <div class="bg-gradient-to-r from-emerald-900 via-sky-900 to-slate-900 rounded-2xl p-6 text-white shadow-md flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 bg-white/15 px-3 py-1 rounded-full text-xs font-bold text-amber-300">
+            <i class="fa-solid fa-compass"></i>
+            <span>架構式導覽設計：先掌握全案 4 階段與 6 大通則，需要法規明細時再點開卡片！</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold">再生能源業者「從併聯審查到正式躉售」實務作業全貌</h2>
+          <p class="text-xs sm:text-sm text-sky-100 max-w-3xl leading-relaxed">
+            本平台專為<strong>太陽能／再生能源開發商、電器承裝業及電機技師</strong>編製。我們將台電內部行政作業（如排隊登錄、工作聯絡單流轉）與業者實務分離，讓您精準掌控<strong>屋頂型、地面型、併內線、共同升壓站及光儲案場</strong>之應備文件、致命期限卡控與報竣工掛表要點。
+          </p>
+        </div>
+        <button onclick="switchTab('guide')" class="shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-5 py-3 rounded-xl text-sm shadow-lg transition flex items-center gap-2">
+          <span>進入案場類型分級檢核</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- 一、業者端實務 4 大階段架構圖 ＋ 台電內部作業參考區 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-diagram-next text-emerald-700"></i>
+              <span>一、業者端實務流程 4 大階段架構（點擊各階段卡片展開細項）</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">點擊下方卡片可檢視各階段業者必備表單、主管機關文件順序（第一／二／三型差異）與時限卡控</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+            <i class="fa-solid fa-hand-pointer mr-1"></i>點擊卡片展開細節
+          </span>
+        </div>
+
+        <!-- 4 大階段架構卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- 階段 1 -->
+          <div onclick="toggleStageDetail('st_1')" class="cursor-pointer rounded-xl border-2 border-emerald-600 bg-emerald-50/40 p-4 hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="bg-emerald-700 text-white text-xs font-bold px-2.5 py-0.5 rounded">階段 1｜併聯審查</span>
+                <span class="text-xs text-emerald-800 font-bold">點看細節 <i class="fa-solid fa-chevron-down ml-0.5"></i></span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-1.5">併聯審查與初步協商</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                • 檢附<strong>附表2自主檢核表、附表3申請表、附件7工程圖說</strong>與土地/建物面積佐證。<br>
+                • <strong>&lt;20kW 屋頂型併低壓用戶內線</strong>（非低壓需量）：適用<strong>附件4免併網審查</strong>簡化流程，免審查意見書直接協商與申請同意備案！
+              </p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-emerald-200 text-xs font-bold text-emerald-900">
+              產出：併聯審查意見書（效期1年）
+            </div>
+          </div>
+
+          <!-- 階段 2 -->
+          <div onclick="toggleStageDetail('st_2')" class="cursor-pointer rounded-xl border-2 border-sky-600 bg-sky-50/40 p-4 hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="bg-sky-700 text-white text-xs font-bold px-2.5 py-0.5 rounded">階段 2｜備案簽約協商</span>
+                <span class="text-xs text-sky-800 font-bold">點看細節 <i class="fa-solid fa-chevron-down ml-0.5"></i></span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-1.5">取得同意備案、簽約與細部協商</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                • 持意見書向能源署/縣市政府取得<strong>同意備案</strong>（第一型先電業籌設、第二型先施工許可）。<br>
+                • 於同意備案效期內簽訂<strong>電能購售契約</strong>（光電 2 個月、其他 6 個月），並於試運轉前完成<strong>細部協商(附件13)</strong>。
+              </p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-sky-200 text-xs font-bold text-sky-900">
+              產出：購售電契約 ＋ 細部協商紀錄
+            </div>
+          </div>
+
+          <!-- 階段 3 -->
+          <div onclick="toggleStageDetail('st_3')" class="cursor-pointer rounded-xl border-2 border-amber-500 bg-amber-50/40 p-4 hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="bg-amber-600 text-white text-xs font-bold px-2.5 py-0.5 rounded">階段 3｜報竣工與掛表</span>
+                <span class="text-xs text-amber-800 font-bold">點看細節 <i class="fa-solid fa-chevron-down ml-0.5"></i></span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-1.5">併聯試運轉、報竣工掛表與 DREAMS 上線</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                • 繳清併網工程費且外線完工後，檢附<strong>附表6竣工報告單(表C)</strong>、表租合約、公會證明及綠能容許文件申請併聯試運轉。<br>
+                • <strong>≥500kW 或光儲案</strong>須於報竣前申請加入 <strong>DREAMS</strong>，裝表後 <strong>1 個月內</strong>完成回傳並交附表7。
+              </p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-amber-200 text-xs font-bold text-amber-900">
+              產出：完成併聯通知函（首次併聯日）
+            </div>
+          </div>
+
+          <!-- 階段 4 -->
+          <div onclick="toggleStageDetail('st_4')" class="cursor-pointer rounded-xl border-2 border-purple-600 bg-purple-50/40 p-4 hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="bg-purple-700 text-white text-xs font-bold px-2.5 py-0.5 rounded">階段 4｜設備登記躉售</span>
+                <span class="text-xs text-purple-800 font-bold">點看細節 <i class="fa-solid fa-chevron-down ml-0.5"></i></span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-1.5">取得設備登記與正式開始躉售電能</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                • 務必於<strong>簽約日起 1 年內</strong>向主管機關取得<strong>設備登記文件</strong>（第二型自用發電登記證、第一型電業執照）。<br>
+                • 檢附設備登記文件及「開始躉售電能登記單」洽台電抄表，<strong>回溯以首次併聯日起算 20 年躉購期</strong>。
+              </p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-purple-200 text-xs font-bold text-purple-900">
+              產出：正式購售電能函文（開始撥款）
+            </div>
+          </div>
+        </div>
+
+        <!-- 點擊展開之階段細節抽屜 -->
+        <div id="stageDetailDrawer" class="hidden rounded-xl bg-slate-50 border border-slate-300 p-5 text-xs sm:text-sm"></div>
+
+        <!-- 台電內部作業流程參考區（灰底說明區塊，不混入業者勾稽表） -->
+        <div class="rounded-xl bg-slate-100 border border-slate-300 p-4 text-xs text-slate-700 space-y-1.5">
+          <div class="font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-slate-600"></i>
+            <span>【台電端內部作業參考說明】（僅供業者掌握審查進度，不列入業者勾稽表）</span>
+          </div>
+          <p>
+            • <strong>審查主辦權責與時限（第1章第2節、第2章第2節）：</strong>22.8kV以下配電系統、契約容量內之69kV+大用戶內線、以及併同一特高壓內線之第三型屋頂型光電累計未達20MW者，由<strong>各區營業處</strong>主辦；台電受理文件完備後，無論是否需審查系衝報告，均應於<strong>最多 14 個工作天內</strong>完成審查。<br>
+            • <strong>台電內部系統流轉：</strong>台電內部透過 RNIS 登錄排隊序位、開立「特殊用電連絡單(N全額/R餘電)」、填寫「用戶與變壓器關聯資料表」及掛表後 2 個工作天內傳送工作聯絡單至營業課核發完成併聯函（須回傳 DREAMS 者須待規劃課確認附表7連線無誤後 3 個工作天內發文）。
+          </p>
+        </div>
+      </div>
+
+      <!-- 二、配電級再生能源「6 大併網共通原則（通則）」可展開卡片 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-book-open-reader text-sky-700"></i>
+            <span>二、業者必懂「6 大併網共通原則（通則）」總整理</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">涵蓋電壓分流、合併計算、虛佔饋線卡控期限、內線混搭矩陣、光儲規則及停電展延計算（點擊下方按鈕展開細節）</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- 通則 1 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-sky-100 text-sky-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 1｜電壓等級與型別分流</span>
+                <span class="text-xs text-slate-500">第1章第1節、第3章第1節表1</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">發電設備總容量對應「併接系統電壓等級」與一/二/三型分流</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>第一型（發電業）</strong>：依電業法設置之發電業（合併≥2,000kW併外線應以電業申設）。</li>
+                <li>• <strong>第二型（≥2,000kW 自用發電設備）</strong> / <strong>第三型（&lt;2,000kW 自用發電設備）</strong>。</li>
+                <li>• <strong>低壓系統</strong>：&lt;100kW（單相三線110/220V、三相三線220V或三相四線220/380V）；100~&lt;500kW（限三相四線220/380V或高壓）。</li>
+                <li>• <strong>高壓／特高壓</strong>：500kW~5,000kW（11.4kV/22.8kV）；&gt;5,000kW~&lt;10,000kW（11.4kV再生能源專線或22.8kV）；10,000kW~&lt;20,000kW（22.8kV專線或特高壓）；≥20,000kW（特高壓系統）。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_1')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：擴大配電饋線可併容量方案(10MW)與低壓單相/三相上限規定</span>
+              </button>
+              <div id="gen_rule_1" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p><strong>1. 低壓單相與三相不平衡限制（附件2第3條(五)）：</strong>併接低壓單相配電系統者，最大裝置容量不得超過 <strong>20kVA (20kW)</strong>；併接低壓三相配電系統者，各相間裝置容量差最大不得大於 <strong>5kVA</strong>。</p>
+                <p><strong>2. 擴大配電饋線可併容量方案（第1章第3節三）：</strong>11.4kV饋線已核准總容量超過5,000kW未達10,000kW時（22.8kV類推），依「饋線最低淨負載量（每年1、2月中午12時最低負載+已併聯光電×0.9）」檢討，優先開放畜禽舍與學校屋頂光電；大於100kW者須裝設DREAMS監控設備。</p>
+                <p><strong>3. 避開光電尖峰時段切結（附件26）：</strong>生質能、廢棄物等可控制發電時段設備，若簽署切結書避開每日 <strong>9:00~17:00</strong> 尖峰時段並回傳 DREAMS，可突破饋線光電容量限制同意併聯。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 通則 2 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-sky-100 text-sky-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 2｜合併計算與併接點數</span>
+                <span class="text-xs text-slate-500">第3章第2~3節、第7節第6~7款</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">同一場址「合併計算總裝置容量原則」與禁止化整為零</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>必須合併計算之 4 種地點</strong>：(1)同一用電場所場址；(2)非用電場所之同一地號；(3)同一小段（或無小段之同一段）且土地所有權人同一；(4)同一申請設置者之土地為相鄰或相同者。</li>
+                <li>• <strong>禁止分割規避 2,000kW</strong>：同一場址分割數案（如多案499kW）合計超過2,000kW併外線者，屬發電業等級大容量案場，應整合申設併接高壓以上系統（併高壓以上用戶內線自發自用者，得同意拆案核發第三型意見書）。</li>
+                <li>• <strong>併接點上限</strong>：架空區以提供高低壓各一併聯處所、地下區以提供同一併聯處所為原則；併內線合計每達100kW以上需分立併接點時，<strong>每棟建築物仍以一處併接點為限</strong>。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_2')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：狹長土地(圳路/國道)、學校冷氣專戶及高壓建築物雙併接點例外</span>
+              </button>
+              <div id="gen_rule_2" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p><strong>1. 狹長土地例外：</strong>設置於灌溉圳路、溝渠大排或橫跨國(省)道等狹長土地，集結併接確有困難者，得個案檢討分案併聯，但各案場範圍不得交錯且須有明顯隔離標示。</p>
+                <p><strong>2. 學校冷氣專戶例外：</strong>設有冷氣專戶之高中以下學校得增加一組低壓併接點，後續增設之屋頂型光電可另併接至冷氣專戶之台電配電變壓器。</p>
+                <p><strong>3. 高壓以上用戶內線雙併接點：</strong>集結確有困難者得個案協調每棟建築物增設至兩處併接點，但須永久標示台電電源與光電系統各自之隔離設備位置。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 通則 3 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-rose-100 text-rose-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 3｜防虛佔饋線與致命期限</span>
+                <span class="text-xs text-slate-500">第1章第2節、第4節、附件3</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">防範虛佔饋線容量機制：面積上限 0.2kW/m² 與「逾期即撤案」紅線</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>設置面積合理性上限</strong>：屋頂面積以 100% 認定、土地以法定使用比例認定，每 <strong>1 平方公尺最大可鋪設 0.2 kW</strong>（即每 1kW 至少需 5m² ≈ 1.5125 坪），超標且說明不合理者直接取消申請。</li>
+                <li>• <strong>補件期限（1個月）</strong>：核發意見書前欠缺文件，自台電發出改善通知翌日起 <strong>1 個月內</strong>未補件即取消案件。</li>
+                <li>• <strong>地面型租約公證書封面（30工作天）</strong>：第三型地面型併配電系統，須於核發審查意見書後 <strong>30 個工作天內</strong>提供與地主租賃契約公證書封面影本（過戶中得以買賣契約公證書+新地主租約公證書替代），逾期逕予取消！</li>
+                <li>• <strong>高壓系衝報告（2週）</strong>：受理時先附申請電網參數函文者，須於台電函復電網參數後 <strong>2 週內</strong>補附系統衝擊分析報告，否則取消案件。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_3')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：意見書效期展延(最多2次)、變更設置者名稱限制與計點制度</span>
+              </button>
+              <div id="gen_rule_3" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p><strong>1. 審查意見書效期與展延（附件3第3點、第1章第4節四）：</strong>意見書有效期間為 <strong>1 年</strong>，須於屆滿前 <strong>2 個月</strong>申請展延，最多展延 <strong>2 次</strong>（一般案每次展延1年，第三型再生能源每次展延<strong>半年</strong>；第二次展延審查作業費減半，未達11.4kV案件首次展延補收1.8萬元）。展延時必須檢附「實質開發行為證明」（如有效建照、綠能設施容許申請/同意函、地目變更同意函、地面型租約公證書封面等）。</p>
+                <p><strong>2. 變更設置者名稱禁止原則：</strong>未完成併聯前，除經能源署或縣市政府認可同意外，不得申請變更設置者名稱（排隊案件變更名稱一律以新案重辦）。</p>
+                <p><strong>3. 先行細部協商／外線設計計點懲處：</strong>勾選核發意見書後即進行細部協商者，須於 <strong>1 個月內</strong>向能源署申請同意備案；勾選先行外線設計者，須於通知繳費後 <strong>1 個月內</strong>繳費並完成自備桿/自埋管。違反者計點並取消意見書，1 年累計 3 次取消該資格。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 通則 4 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-emerald-100 text-emerald-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 4｜併接用戶內線規則</span>
+                <span class="text-xs text-slate-500">第3章第7節表2、第6章第1節</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">併接用戶內線（全額／餘電／借道／不躉售）與多套設備混搭禁忌</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>非用戶借道內線（附件12）</strong>：設置者與用電戶不同人時，<strong>無法辦理「餘電躉售」</strong>，僅能採「<strong>借道用戶內線全額躉售</strong>」或「併聯不躉售」，且須檢附借道同意書。</li>
+                <li>• <strong>同場址兩套設備混搭限制（表2）</strong>：「全額躉售」與「餘電躉售」<strong>絕對不可混搭併同一內線</strong>！若要將「全額/餘電躉售」與「併聯不躉售」混搭，不躉售迴路必須裝設<strong>實體防逆設備（如附圖5搭配EMS）</strong>確保無逆送電網之虞。</li>
+                <li>• <strong>計量與低壓需量限制</strong>：併內線必須裝設 <strong>AMI 智慧電表</strong>；低壓需量用戶原則無法申請併內線全額躉售（但機關、學校、營區或已裝AMI且收值穩定者得個案開放）。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_4')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：併內線超過 1,600AT 開關限制、免表前開關條件與三相中性線規定</span>
+              </button>
+              <div id="gen_rule_4" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p><strong>1. 低壓側開關超過 1,600AT 限制（第6章第1節(十五)）：</strong>超過一般量測儀器勾測範圍無法進行倍比測試，原則須改由高壓側進行內線併聯（除非盤體及銅排間距可配合大口徑量測儀器個案訂製）。</p>
+                <p><strong>2. 免裝設表前開關條件（第6章第1節(十六)）：</strong>併接低壓系統案件，電源側導線線徑<strong>未達 22mm²</strong> 且已於電表或責任分界點附近裝設隔離開關者，得免裝設表前開關。</p>
+                <p><strong>3. 三相系統必接中性線與變流器接線（第6章第1節(十一)(十七)）：</strong>併接三相系統時，不論外線或內線，<strong>均須引接中性線供電表裝接使用</strong>；低壓三相三線系統得以單相變流器 Δ(Delta) 接線組成，低壓三相四線系統則須採用三相變流器。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 通則 5 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-purple-100 text-purple-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 5｜再生能源結合儲能</span>
+                <span class="text-xs text-slate-500">第3章第8節、附圖6、附表12~13</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">自用儲能併網 vs 經濟部遴選「光儲競標得標案」併網規範</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>無售電需求之自用光儲</strong>：併外線以變流器額定最大容量進行系衝審查；併用戶內線者，<strong>儲能設備必須裝設於變流器「直流側」</strong>（如圖21），並換裝智慧型電表。</li>
+                <li>• <strong>光儲競標得標案（僅可併外線，不可併內線）</strong>：取得能源署核配同意函起 <strong>14 個日曆天內</strong>，須向台電申請換發審查意見書（扣減釋出容量作為最大躉售電量）；若規劃增設光電，須於得標公告日起 1 年內取得電業籌設許可，且須俟儲能完工併網後始可併聯。</li>
+                <li>• <strong>儲能完工雙簽證與調度測試</strong>：須提交<strong>電機技師與消防設備師竣工簽證</strong>、填寫<strong>附表12(光儲資源註冊表)及附表13(SD-WAN環境調查表)</strong>，並通過電力調度處通訊能力測試取得「量測設備測試合格函（範例19）」。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_5')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：光儲釋出容量增設光電之工程費免收與額外費率規定</span>
+              </button>
+              <div id="gen_rule_5" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p>• 依據第4章第1節第十一點：太陽光電結合儲能系統得標案件，利用釋放之饋線容量增設太陽光電發電設備者，<strong>原則免負擔再生能源加強電力網工程費用</strong>，惟該增設發電設備將無法取得再生能源加強電力網額外費率。</p>
+                <p>• 光儲案場無論容量大小，均須於併聯試運轉前完成監控設備安裝，並分別獨立回傳太陽光電與儲能系統之即時運轉資訊。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 通則 6 -->
+          <div class="rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between bg-white">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="bg-amber-100 text-amber-900 text-xs font-bold px-2.5 py-0.5 rounded">通則 6｜停電展延與線損計費</span>
+                <span class="text-xs text-slate-500">第6章第1節(七)、第3節(九)、附表10~11</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-base mb-2">不可歸責業者停電「暫停計算電能躉售期間」與線損計算規則</h4>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                <li>• <strong>暫停計算電能躉售期間（展延20年躉購期）</strong>：已併聯試運轉之太陽光電案場，因台電工作/事故停電或共同升壓站維護等<strong>不可歸責於設置者之事由，連續停電達 1 日（24小時）以上</strong>者，可申請計入暫停計算躉售期間。</li>
+                <li>• <strong>累計與結算週期</strong>：以實際停復電時間為準，每滿 24 小時累算 1 日（未滿24小時不計），於<strong>每單數月（1、3、5、7、9、11月）之 1 日</strong>結算換文修約（跨越結算日則移至下次單數月1日）。台電因素由台電填<strong>附表10</strong>，共同升壓站因素由共用者填<strong>附表11</strong>送區處核轉能源署備查。</li>
+                <li>• <strong>線損率（L）計算</strong>：併內線電費公式不計線損率（全額躉售裝表距內線併接點以不超過100公尺為原則）；併外線者計量設備至責任分界點之線損率（列至小數第4位）納入計費。</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="toggleAccordion('gen_rule_6')" class="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>點此展開：併網工程費繳費期限(1個月)、變更設計補退費與取消退費比例</span>
+              </button>
+              <div id="gen_rule_6" class="hidden mt-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                <p><strong>1. 繳費期限（第4章第1節十）：</strong>台電通知繳交併網工程費後，繳費有效期間為 <strong>1 個月</strong>，逾期如遇單價或工料價格變更，應照新價重新核算。</p>
+                <p><strong>2. 繳費後取消案件退費比例（第4章第1節七）：</strong>工程尚未施工（含免外線）退還取消容量併網工程費 <strong>90%</strong>；工程已施工尚未完成退還 <strong>50%</strong>；工程已完工則<strong>不予退還</strong>。</p>
+                <p><strong>3. 僅併聯不躉售免收加強電網費（第4章第1節十二）：</strong>裝設防逆電驛確保無逆送至台電電網者，免負擔再生能源加強電力網工程費用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         分頁 2：案場類型分級檢核與應備文件
+         ========================================================================= -->
+    <section id="tabContent_guide" class="space-y-6 hidden">
+
+      <!-- 步驟 1：選擇案場主要類型與附加條件 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="font-bold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-700 text-white text-xs flex items-center justify-center font-bold">1</span>
+              <span>選擇本案「案場主要類型」與「工程附加條件」</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">系統將依據手冊第 1~7 章及附表 2~13、附件 1~31，自動篩選出您必須準備的文件與現場檢核項目</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="expandAllCards(true)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-lg font-bold transition">
+              <i class="fa-solid fa-angles-down mr-1"></i>展開全部細項
+            </button>
+            <button onclick="expandAllCards(false)" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-lg font-bold transition">
+              <i class="fa-solid fa-angles-up mr-1"></i>收合全部細項
+            </button>
+          </div>
+        </div>
+
+        <!-- 五大案場類型切換器 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <!-- A. 屋頂型 <20kW 免併審 -->
+          <button type="button" onclick="selectSiteType('roof_small')" id="typeCard_roof_small" class="text-left p-4 rounded-xl border-2 transition">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="font-bold text-base text-slate-900">A. 屋頂型（&lt;20kW 併低壓內線）</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 shrink-0">免併網審查</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              同一電號合併未達20kW且併低壓用戶內線（非低壓需量），免取得併網審查意見書（附件4），直接辦理協商與同意備案。
+            </p>
+          </button>
+
+          <!-- B. 屋頂型一般配電級 -->
+          <button type="button" onclick="selectSiteType('roof_std')" id="typeCard_roof_std" class="text-left p-4 rounded-xl border-2 transition">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="font-bold text-base text-slate-900">B. 屋頂型（20kW ~ &lt;2,000kW）</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 shrink-0">屋頂累進費率</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              一般工廠、商辦、集合住宅或畜禽舍屋頂型光電，須檢附建物使照/建照/特定工廠核准函，享50kW免收及屋頂型累進費率。
+            </p>
+          </button>
+
+          <!-- C. 地面型 / 水面型 -->
+          <button type="button" onclick="selectSiteType('ground_water')" id="typeCard_ground_water" class="text-left p-4 rounded-xl border-2 transition">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="font-bold text-base text-slate-900">C. 地面型／水面型（含 ≥2,000kW）</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 shrink-0">嚴格期限卡控</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              包含第一類地籍謄本、非特定農業區佐證、意見書後30工作天補租約公證書封面、綠能容許文件及加強電網均化單價計費。
+            </p>
+          </button>
+
+          <!-- D. 併接用戶內線 -->
+          <button type="button" onclick="selectSiteType('internal_line')" id="typeCard_internal_line" class="text-left p-4 rounded-xl border-2 transition">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="font-bold text-base text-slate-900">D. 併接用戶內線（自用/餘電/借道）</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-900 shrink-0">免計線損率</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              自發自用餘電躉售、借道用戶內線全額躉售（附件12）或併聯不躉售（防逆電驛+EMS），須裝設AMI電表與公共空間隔離開關。
+            </p>
+          </button>
+
+          <!-- E. 共同升壓站與光儲結合 -->
+          <button type="button" onclick="selectSiteType('booster_storage')" id="typeCard_booster_storage" class="text-left p-4 rounded-xl border-2 transition">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="font-bold text-base text-slate-900">E. 共同升壓站／光儲競標案場</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 shrink-0">特定併聯範圍</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              涵蓋共同升壓站設置者(30日曆天繳保證金)/共用者(3個月簽租約公證)，以及光儲得標案14日換發意見書與電機/消防雙簽證。
+            </p>
+          </button>
+        </div>
+
+        <!-- 附加條件勾選列 -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 text-xs">
+          <div class="font-bold text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-sliders text-emerald-700"></i>
+            <span>勾選本案「工程附加條件」（勾選後下方將自動加入對應之法規檢核卡片）：</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_ge100kw" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">總裝置容量 ≥ 100kW 或供公眾使用建築物</span>
+                <span class="text-slate-500">強制由電機技師設計監造、附技師執照及公會竣工證明</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_ge500kw" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">總裝置容量 ≥ 500kW（或擴大饋線&gt;100kW / 光儲案）</span>
+                <span class="text-slate-500">強制加入 DREAMS 系統、附表29及裝表1個月內交附表7</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_hv" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">併接高壓以上系統（11.4kV / 22.8kV / 69kV+）</span>
+                <span class="text-slate-500">審查費8.5萬/34萬、遙控跳脫、調度專線電話與附件27</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_nonOwner" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">設置者與建物／土地所有權人不同人</span>
+                <span class="text-slate-500">加附建物/土地同意書(範例17/18)或借道同意書(附件12)</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_vpcExpired" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">模組或變流器之 VPC 驗證證書已逾有效期限</span>
+                <span class="text-slate-500">須補附製造商出具之出廠證明影本（證明效期內購買）</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg bg-white border border-slate-200 cursor-pointer hover:border-sky-400">
+              <input type="checkbox" id="opt_specialLocal" onchange="updateOptions()" class="mt-0.5 rounded text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">漁電共生／農業容許／高雄或花蓮特定地區案場</span>
+                <span class="text-slate-500">檢核農業/水產養殖綠能容許文件、花蓮縣府支持文件</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 步驟 2：快速操作與架構卡片列表 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+        <div class="text-xs text-slate-600">
+          <i class="fa-solid fa-circle-info text-sky-700 mr-1"></i>
+          每張卡片預設僅呈現<strong>核心架構與期限卡控</strong>，點擊「<strong>展開查看細項與法規依據</strong>」即可檢視完整查核點；右側勾稽結果與備註將即時連動至 A4 列印中心。
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="batchMarkStatus('ok')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-3 py-1.5 rounded-lg transition">
+            <i class="fa-solid fa-check-double mr-1"></i>本頁全部標為已備齊/合格
+          </button>
+          <button onclick="batchMarkStatus('pending')" class="text-xs bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-3 py-1.5 rounded-lg transition">
+            重置勾稽狀態
+          </button>
+        </div>
+      </div>
+
+      <div id="checklistCardsContainer" class="space-y-6"></div>
+
+    </section>
+
+    <!-- =========================================================================
+         分頁 3：A4 勾稽表設定與列印中心
+         ========================================================================= -->
+    <section id="tabContent_print" class="space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- 左側：列印設定面板 (4欄) -->
+        <div class="lg:col-span-4 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-5 sticky top-24">
+          <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
+            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-emerald-700"></i>
+              <span>A4 勾稽表列印設定面板</span>
+            </h2>
+            <button onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow transition flex items-center gap-1.5">
+              <i class="fa-solid fa-print"></i>
+              <span>列印 / 另存 PDF</span>
+            </button>
+          </div>
+
+          <!-- 1. 案場基本資料填寫 -->
+          <div class="space-y-2.5 text-xs">
+            <label class="font-bold text-slate-800 block uppercase">1. 案場基本資料（將顯示於勾稽表頂部）</label>
+            <div>
+              <span class="text-slate-600 block mb-0.5">案場名稱 / 設置場址</span>
+              <input type="text" id="meta_siteName" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="text-slate-600 block mb-0.5">台電受理編號</span>
+                <input type="text" id="meta_caseNo" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+              </div>
+              <div>
+                <span class="text-slate-600 block mb-0.5">案場／既設電號</span>
+                <input type="text" id="meta_meterNo" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+              </div>
+            </div>
+            <div>
+              <span class="text-slate-600 block mb-0.5">再生能源設置者名稱</span>
+              <input type="text" id="meta_applicant" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="text-slate-600 block mb-0.5">承裝業 / 監造技師</span>
+                <input type="text" id="meta_contractor" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+              </div>
+              <div>
+                <span class="text-slate-600 block mb-0.5">預定併聯試運轉日</span>
+                <input type="text" id="meta_targetDate" oninput="saveMetaAndRefreshPrint()" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. 列印模式切換 -->
+          <div class="space-y-2 pt-3 border-t border-slate-200 text-xs">
+            <label class="font-bold text-slate-800 block uppercase">2. 選擇列印模式與細項展開</label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer">
+              <input type="radio" name="printMode" value="all" checked onchange="renderPrintDocument()" class="mt-0.5 text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">完整檢核結果模式</span>
+                <span class="text-slate-600">呈現已勾選(☑)、待補(☒)與實測備註</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer">
+              <input type="radio" name="printMode" value="blank" onchange="renderPrintDocument()" class="mt-0.5 text-emerald-700">
+              <div>
+                <span class="font-bold text-slate-900 block">空白現場查核表（帶去工地手寫打勾）</span>
+                <span class="text-slate-600">狀態欄全部印為 `☐ 已備齊/合格`</span>
+              </div>
+            </label>
+            <label class="flex items-start gap-2 p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer">
+              <input type="radio" name="printMode" value="incomplete" onchange="renderPrintDocument()" class="mt-0.5 text-emerald-700">
+              <div>
+                <span class="font-bold text-rose-700 block">僅列印「尚未備齊項目」（缺失催辦單）</span>
+                <span class="text-slate-600">自動過濾已完成項目，專供送件前催辦</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-sky-200 bg-sky-50 cursor-pointer font-bold text-sky-900">
+              <input type="checkbox" id="printIncludeSubItems" checked onchange="renderPrintDocument()" class="rounded text-sky-700">
+              <span>展開列印細節查核點（如表C暗管/一般/自用設備明細）</span>
+            </label>
+          </div>
+
+          <!-- 3. 紙本字體大小切換 -->
+          <div class="space-y-2 pt-3 border-t border-slate-200 text-xs">
+            <label class="font-bold text-slate-800 block uppercase">3. A4 紙本／PDF 字體大小</label>
+            <div class="grid grid-cols-3 gap-1.5">
+              <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-300 bg-white cursor-pointer font-bold">
+                <input type="radio" name="printFontSize" value="11pt" onchange="updatePrintFontSize(this.value)">
+                <span>標準 11pt</span>
+              </label>
+              <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-amber-400 bg-amber-50 cursor-pointer font-bold">
+                <input type="radio" name="printFontSize" value="12.5pt" checked onchange="updatePrintFontSize(this.value)">
+                <span>大字 12.5pt</span>
+              </label>
+              <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-300 bg-white cursor-pointer font-bold">
+                <input type="radio" name="printFontSize" value="14pt" onchange="updatePrintFontSize(this.value)">
+                <span>特大 14pt</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. 自由勾選要列印哪些章節 -->
+          <div class="space-y-2 pt-3 border-t border-slate-200 text-xs">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-slate-800 uppercase">4. 勾選要列印的章節</label>
+              <div class="space-x-2">
+                <button type="button" onclick="toggleAllPrintSections(true)" class="text-sky-700 hover:underline font-bold">全選</button>
+                <button type="button" onclick="toggleAllPrintSections(false)" class="text-slate-500 hover:underline font-bold">全不選</button>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_header" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>案場基本資料表頭</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_stage1" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>壹、併聯審查與面積/權屬證明文件（附表2~3）</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_stage2" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>貳、同意備案、簽約與細部協商圖說（附件7、13）</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_stage3" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>參、報竣工掛表與併聯試運轉自檢（附表6表C、附件28）</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_stage4" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>肆、DREAMS 監控回傳、光儲與設備登記躉售（附表7）</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="pSec_sign" checked onchange="renderPrintDocument()" class="pSec-cb rounded text-emerald-700">
+                <span>業者自主確認三方簽章欄（承裝業/技師/設置者）</span>
+              </label>
+            </div>
+          </div>
+
+          <button onclick="window.print()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm shadow transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-print"></i>
+            <span>立即列印 / 匯出 A4 PDF 勾稽表</span>
+          </button>
+        </div>
+
+        <!-- 右側：即時預覽 A4 紙本勾稽表 (8欄) -->
+        <div class="lg:col-span-8 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 px-1">
+            <span><i class="fa-solid fa-eye text-emerald-700 mr-1"></i>即時 A4 紙本預覽（單一項目若不想印出，可在分頁 2 取消該卡片之「🖨️ 列印」勾選）</span>
+            <span>目前案場類型：<strong id="printSiteTypeLabel" class="text-slate-900">B. 屋頂型（20kW ~ &lt;2,000kW）</strong></span>
+          </div>
+          <div id="printPreviewBox" class="bg-white rounded-xl shadow-lg border border-slate-300 p-6 sm:p-10"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         分頁 4：業者實務試算與期限工具箱
+         ========================================================================= -->
+    <section id="tabContent_tools" class="space-y-6 hidden">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- 工具 1：再生能源併網工程費試算器 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+          <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg shrink-0">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">工具 1：再生能源併網工程費試算器</h3>
+              <p class="text-xs text-slate-500">依據手冊第 4 章（屋頂型累進費率 vs 地面型/專線/共同升壓站均化單價）</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">設置類型</label>
+              <select id="fee_type" onchange="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium">
+                <option value="roof_lv">屋頂型太陽光電（低壓併網）</option>
+                <option value="roof_hv">屋頂型太陽光電（高壓/高壓用戶內線）</option>
+                <option value="ground_dist">地面型／水面型／非屋頂型（配電級）</option>
+                <option value="booster">併接共同升壓站（配電級案場）</option>
+                <option value="ehv_roof">併接特高壓用戶內線屋頂型（&gt;2,000kW）</option>
+                <option value="no_sell">僅併聯不躉售（已裝防逆電驛）</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">同一場址合併總裝置容量 (kW)</label>
+              <input type="number" id="fee_kw" value="499" min="1" step="1" oninput="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono font-bold">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">台電是否需加強電力網？</label>
+              <select id="fee_needReinforce" onchange="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                <option value="yes">是（需加強電力網）</option>
+                <option value="no">否（既有線路容量足夠）</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">是否使用台電新(增)設再生能源專線？</label>
+              <select id="fee_dedicated" onchange="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                <option value="no">否（一般既有饋線/延伸線）</option>
+                <option value="yes">是（使用台電新/增設再生能源專線）</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">加強電網架空線路長度 (km)</label>
+              <input type="number" id="fee_ohKm" value="1.5" min="0" step="0.1" oninput="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">加強電網地下電纜長度 (km)</label>
+              <input type="number" id="fee_ugKm" value="0" min="0" step="0.1" oninput="calcGridFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+            <div class="sm:col-span-2 flex flex-wrap items-center gap-4 pt-1">
+              <label class="flex items-center gap-1.5 cursor-pointer font-medium">
+                <input type="checkbox" id="fee_newTr" onchange="calcGridFee()" class="rounded text-emerald-700">
+                <span>併配電級低壓側需新(換)裝變壓器 (+1,005元/kW)</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer font-medium">
+                <input type="checkbox" id="fee_proxyStepUp" onchange="calcGridFee()" class="rounded text-emerald-700">
+                <span>委請台電代辦升高壓設備 (+2,880元/kW)</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="feeResultBox" class="p-4 rounded-xl bg-emerald-50 border-2 border-emerald-500 text-xs space-y-1.5"></div>
+        </div>
+
+        <!-- 工具 2：面積合理性檢核（0.2kW/m²）＋ 併網審查作業費與系衝判定 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+          <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-lg shrink-0">
+              <i class="fa-solid fa-ruler-combined"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">工具 2：面積合理性（0.2kW/m²）與審查作業費／系衝判定</h3>
+              <p class="text-xs text-slate-500">依據第 1 章第 4 節(面積上限)與第 2 章第 2 節(審查費及系統衝擊分析免附條件)</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">合法建物屋頂／土地可鋪設面積 (m²)</label>
+              <input type="number" id="area_sqm" value="2500" min="1" step="10" oninput="syncAreaFromSqm()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono font-bold">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">換算坪數 (1坪 ≈ 3.3058 m²)</label>
+              <input type="number" id="area_ping" value="756.25" min="1" step="1" oninput="syncAreaFromPing()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">預計申設總裝置容量 (kW)</label>
+              <input type="number" id="area_kw" value="499" min="1" step="1" oninput="evalAreaAndReviewFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono font-bold">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">併接方式與實際併接點</label>
+              <select id="rev_conn" onchange="evalAreaAndReviewFee()" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium">
+                <option value="ext_lv">併接外線－低壓外線</option>
+                <option value="ext_hv">併接外線－高壓外線 (11.4kV/22.8kV)</option>
+                <option value="ext_ehv">併接外線－特高壓外線 (69kV+)</option>
+                <option value="in_lv_lv">併接內線－低壓用戶低壓內線</option>
+                <option value="in_hv_lv">併接內線－高壓用戶低壓內線</option>
+                <option value="in_hv_hv">併接內線－高壓用戶高壓內線</option>
+                <option value="in_ehv_lv">併接內線－特高壓用戶低壓內線</option>
+                <option value="in_ehv_hv">併接內線－特高壓用戶高壓內線</option>
+                <option value="in_ehv_ehv">併接內線－特高壓用戶特高壓內線</option>
+                <option value="booster">併接共同升壓站（高壓以下）</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2 flex flex-wrap items-center gap-4">
+              <label class="flex items-center gap-1.5 cursor-pointer font-medium">
+                <input type="checkbox" id="rev_overContract" onchange="evalAreaAndReviewFee()" class="rounded text-sky-700">
+                <span>併內線裝置容量合計「超過」該用戶經常用電契約容量</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer font-medium">
+                <input type="checkbox" id="rev_ehvRoof20MW" onchange="evalAreaAndReviewFee()" class="rounded text-sky-700">
+                <span>屬併同一特高壓內線之第三型屋頂型光電（累計 &lt;20MW）</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="areaReviewResultBox" class="p-4 rounded-xl bg-sky-50 border-2 border-sky-500 text-xs space-y-2"></div>
+        </div>
+
+      </div>
+
+      <!-- 工具 3：再生能源併網關鍵期限倒數推算器 + 專案備份 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg shrink-0">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">工具 3：再生能源併網關鍵期限倒數推算器（防撤案／防失效卡控）</h3>
+              <p class="text-xs text-slate-500">輸入關鍵基準日，自動推算所有法定死線（30工作天補公證書、光電2個月簽約、簽約1年內併聯、裝表1個月DREAMS上線）</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <button onclick="exportProjectJSON()" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg font-bold">
+              <i class="fa-solid fa-download mr-1"></i>匯出本案勾稽檔 (.json)
+            </button>
+            <label class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3 py-1.5 rounded-lg font-bold cursor-pointer">
+              <i class="fa-solid fa-upload mr-1"></i>匯入備份檔
+              <input type="file" accept=".json" onchange="importProjectJSON(event)" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-amber-50/70 p-4 rounded-xl border border-amber-200 text-xs">
+          <div>
+            <label class="font-bold text-amber-950 block mb-1">基準日 1：取得台電「併聯審查意見書」發文日</label>
+            <input type="date" id="dl_opinionDate" onchange="calcDeadlines()" class="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg font-mono font-bold">
+          </div>
+          <div>
+            <label class="font-bold text-amber-950 block mb-1">基準日 2：取得主管機關「同意備案」發文日</label>
+            <input type="date" id="dl_consentDate" onchange="calcDeadlines()" class="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg font-mono font-bold">
+          </div>
+          <div>
+            <label class="font-bold text-amber-950 block mb-1">基準日 3：簽訂台電「電能購售契約」簽約日</label>
+            <input type="date" id="dl_contractDate" onchange="calcDeadlines()" class="w-full px-3 py-1.5 bg-white border border-amber-300 rounded-lg font-mono font-bold">
+          </div>
+        </div>
+
+        <div id="deadlineCardsOutput" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- 實際列印專用容器 -->
+  <div id="actualPrintContainer" class="hidden print-only-container"></div>
+
+  <!-- 頁尾 (列印時隱藏) -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-8 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+      <div>法規依據：台灣電力公司《配電手冊（八）再生能源篇》（114.03.11 修訂版）</div>
+      <div>系統視角：專供再生能源開發商、電器承裝業及電機技師辦理併網審查、細部協商與報竣工掛表勾稽使用</div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       JavaScript 核心資料庫與互動邏輯
+       ========================================================================= -->
+  <script>
+    // 1. 分頁1：四大階段流程展開細節資料
+    const STAGE_DETAILS = {
+      st_1: {
+        badge: '階段 1｜併聯審查與初步協商（第1章第2節、第2章、附件4、附表2~3）',
+        title: '併聯審查應備文件與「<20kW 屋頂型免併網審查」簡化流程',
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-700">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-emerald-800 text-sm">📌 一般案件（≥20kW 或地面型/高壓/併外線）應備資料：</h5>
+              <p>1. <strong>附表2 配電級再生能源(受理)工作程序自主檢核表</strong>（114.03.11修正版）。</p>
+              <p>2. <strong>附表3 再生能源發電設備併聯審查申請表</strong>（2張）＋ 對應之併聯躉售/變更用電登記單（1張）。</p>
+              <p>3. <strong>面積與權屬佐證</strong>：屋頂型附建物使照/建照/特定工廠核准函（非屋主加附同意書範例17或租約）；地面型附土地謄本(第一類3個月內)、非屬特定農業區佐證（非地主加附土地同意書範例18）。</p>
+              <p>4. <strong>附件7 發電系統工程圖說</strong>（併配電系統2份，每頁由申請人或設計監造者用印）＋ 系統衝擊分析報告（需系衝者得先附申請電網參數函文，函復後2週內補交）。</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-sky-800 text-sm">⚡ 免併網審查簡化流程（附件4｜附圖4）：</h5>
+              <p>• <strong>適用條件（須同時符合）：</strong>(1)台灣本島營業區（不含澎湖、金門、馬祖）；(2)設置屋頂型太陽光電併接台電用戶內線（<strong>低壓需量用戶除外</strong>）；(3)<strong>同一電號用電場所裝置容量合併計算未達 20kW</strong>；(4)每棟建築物不超過1處併接點。</p>
+              <p>• <strong>簡化作法：</strong>無需取得台電「併網審查意見書」，可直接辦理初(細)部協商、外線設計施工及向主管機關申請同意備案。</p>
+              <p class="text-rose-700 font-semibold">⚠️ 提醒：若未俟用戶用電檢驗送電即逕行併網，或合併達20kW分案規避者，原同意備案自始無效！</p>
+            </div>
+          </div>
+        `
+      },
+      st_2: {
+        badge: '階段 2｜取得同意備案、簽訂購售電契約與細部協商（第5章、第6章第1節、附表4~5、附件7、13、14）',
+        title: '不同設備型別（第一／二／三型）法規程序差異與細部協商必備圖說',
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-700">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-sky-800 text-sm">🏛️ 第一型、第二型、第三型向主管機關申辦順序差異：</h5>
+              <p>• <strong>第三型（&lt;2,000kW自用）：</strong>取得台電審查意見書 ➔ 申請<strong>同意備案</strong> ➔ 簽訂購售電契約（光電自同意備案日起 <strong>2 個月內</strong>，其他再生能源 <strong>6 個月內</strong>）➔ 施工興建 ➔ 併聯試運轉 ➔ 申請<strong>設備登記</strong>（免送契約副本給能源署及縣市政府）。</p>
+              <p>• <strong>第二型（≥2,000kW自用）：</strong>意見書 ➔ 申請<strong>施工許可</strong> ➔ 申請同意備案 ➔ 簽約（契約副本須送能源署及地方政府備查，正本貼印花稅12元）➔ 試運轉 ➔ 竣工查驗發給<strong>自用發電設備登記證</strong>。</p>
+              <p>• <strong>第一型（發電業）：</strong>意見書 ➔ <strong>電業籌備創設</strong> ➔ 同意備案 ➔ 簽約 ➔ <strong>施工許可</strong> ➔ 試運轉（最多可分2階段報竣）➔ 竣工查驗發給<strong>電業執照</strong>。</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-emerald-800 text-sm">📐 細部協商應備文件（須於併聯試運轉前完成）：</h5>
+              <p>• 檢附：<strong>附表4併聯協議書</strong>、審查意見書、<strong>附表5保護設備資料表</strong>（內建保護功能者免附）、同意備案影本、初步協商紀錄、<strong>附件7發電系統工程圖說</strong>（合併為乙卷每頁用印）。</p>
+              <p>• <strong>細部設計圖重點：</strong>昇位圖（範例10，發電機組與變流器得同時並列<strong>最多5種品牌</strong>減少修約）、系統單線圖（範例11，不審查模組組列配置與表後開關後單線圖）、銜接點配置圖（範例12，須框示設置地址地界線）、躉售計量配置圖（範例13）。</p>
+            </div>
+          </div>
+        `
+      },
+      st_3: {
+        badge: '階段 3｜併聯試運轉與報竣工掛表（第6章第2節、第7章、附表6表C、附表7、附件28）',
+        title: '完工報竣應備文件、現場檢驗測試（孤島跳脫2秒/復電300秒）與 DREAMS 上線',
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-700">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-amber-800 text-sm">📋 報竣工與併聯試運轉應備 8 大文件：</h5>
+              <p>1. <strong>附表6 竣工報告單（表C）</strong>（用戶/設置者、監造者、承裝業三方簽章與單線圖完全一致；背面實貼公會申報竣工會員證明）。</p>
+              <p>2. <strong>躉售計量設備租賃合約</strong>（自備者附標檢局檢定合格文件）。</p>
+              <p>3. <strong>再生能源電能購售契約</strong>（僅併聯不躉售者免）。</p>
+              <p>4. <strong>初步／細部協商紀錄</strong>及<strong>同意備案文件影本</strong>（第一型加附<strong>工作許可證</strong>）。</p>
+              <p>5. <strong>附件29 再生能源監控設備申請表</strong>（≥500kW或需回傳即時資料者，報竣前須先於 DREAMS 平台完成註冊申請）。</p>
+              <p>6. <strong>綠能設施容許使用證明文件</strong>（同意備案或施工許可加註試運轉時應檢附者）。</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
+              <h5 class="font-bold text-rose-800 text-sm">⚡ 現場掛表檢驗關鍵測試（附件28標準程序）：</h5>
+              <p>• <strong>防孤島效應測試：</strong>市電停電時變流器應於 <strong>2 秒內跳脫</strong>；市電復電後自動復電時間建議設定為 <strong>300 秒</strong>（復電300秒內電表201項有微量視在功率，202/203項為0屬正常虛功現象）。</p>
+              <p>• <strong>保護設定值查對：</strong>高頻 81H ≥ 61Hz、低頻 81L ≤ 58Hz；高壓跳脫為額定電壓 110%（無條件進位，如220V→242V）、低壓跳脫為 88%（無條件捨去，如220V→193V）。</p>
+              <p>• <strong>DREAMS 1個月死線：</strong>裝表後 <strong>1 個月內</strong>須完成即時資料回傳並提交<strong>附表7安裝自主檢查表（含6張施工照）</strong>，逾期未上線將遭解聯！</p>
+            </div>
+          </div>
+        `
+      },
+      st_4: {
+        badge: '階段 4｜取得設備登記與正式開始躉售電能（第6章第3節、附表8）',
+        title: '設備登記期限卡控（簽約日起1年內）與正式開始躉售結算',
+        html: `
+          <div class="space-y-2 text-xs text-slate-700 bg-white p-4 rounded-xl border border-slate-200">
+            <p>1. <strong>簽約日起 1 年內取得設備登記（第6章第2節八、二十）：</strong>設置者應於購售電契約簽約日起 <strong>1 年內</strong>，向主管機關申請核發設備登記文件（第一型電業執照、第二型自用發電設備登記證）。若逾期未取得且經廢止同意備案，台電將終止契約並解聯（若依配電處函文重新取得備案者，須於終止契約函發文日起 <strong>2 個月內</strong>重新簽約，不含主管機關審查時間）。</p>
+            <p>2. <strong>申辦正式開始躉售應備文件（第6章第3節一）：</strong>檢附「<strong>設備登記核准文件</strong>」及「<strong>(開始躉售電能)登記單</strong>（或變更用電/高壓需量電力開始躉售電能登記單，須註明購售電契約編號）」洽台電辦理抄表。</p>
+            <p>3. <strong>計價起始日與費率（第1章第2節十、附件14）：</strong>台電核發正式購售電能函文（範例8）暨換文修約後，結算併聯試運轉期間已計量電能之電費，並<strong>回溯以「首次併聯日」作為 20 年躉購期限之起算日</strong>。</p>
+          </div>
+        `
+      }
+    };
+
+    // 2. 分頁2：案場類型分級檢核與應備文件資料庫
+    // types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage']
+    // opt: null | 'ge100kw' | 'ge500kw' | 'hv' | 'nonOwner' | 'vpcExpired' | 'specialLocal'
+    const SITE_CHECKLIST_DB = [
+      // ==================== 壹、併聯審查與面積／權屬證明文件 ====================
+      {
+        id: 'rn_s1_app_forms',
+        stage: 'stage1',
+        badge: '併聯申請必備｜附表2 & 附表3',
+        title: '配電級再生能源自主檢核表（附表2）與併聯審查申請表（附表3）',
+        summary: '填妥附表3併聯審查申請表(2張)＋對應登記單(1張)，並依附表2逐項確認資料一致（<20kW屋頂併低壓內線免附審查意見書，但仍須辦理協商與圖說審查）。',
+        basis: '第2章第1節、附件4、附表2、附表3',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 檢附「附表2 配電級再生能源(受理)工作程序自主檢核表（114.03.11修正版）」，逐項勾記並由被告知人簽章。',
+          '2. 檢附「附表3 再生能源發電設備併聯審查申請表」2張（註明同一場所、毗鄰或同地號之相關案件編號，確認無分割規避容量）。',
+          '3. 檢附對應登記單1張：併外線填「(併聯躉售)登記單」；併內線填「變更用電(併聯躉售)登記單」或「高壓需量電力(併聯躉售)登記單」（不躉售者填併聯不躉售登記單）。',
+          '4. 評估是否於附表3勾選「核發審查意見書後即進行細部協商」（須於1個月內向能源署申請同意備案）及「即進行外線設計」（須於通知繳費後1個月內繳費並設自備桿/自埋管）。',
+          '5. 【<20kW 屋頂型併低壓內線特例】符合附件4免併網審查原則者（非低壓需量用戶、同電號合併<20kW、每棟1併接點），免取得審查意見書，直接辦理初(細)部協商及同意備案。'
+        ]
+      },
+      {
+        id: 'rn_s1_roof_area',
+        stage: 'stage1',
+        badge: '屋頂型必備｜第1章第4節一 & 附表2',
+        title: '【屋頂型】合法建築物屋頂面積佐證文件與 0.2kW/m² 容量合理性檢核',
+        summary: '受理時必須檢附建物使用執照、建照、特種建築物證明、特定工廠核准函或第7-1條替代文件，且模組鋪設容量不得超過屋頂面積 × 0.2kW/m²。',
+        basis: '第1章第4節一、三(二)、附表2告知事項8',
+        types: ['roof_small', 'roof_std', 'internal_line'],
+        opt: null,
+        subItems: [
+          '1. 檢附建築物合法面積佐證文件（擇一）：(a)建築物使用執照影本；(b)新建/增改建中之建造執照影本；(c)建物所有權狀或建物登記謄本；(d)特種建築物證明文件、特定工廠核准函或「再生能源發電設備設置管理辦法」第7-1條替代文件。',
+          '2. 鋪設面積合理性檢核：屋頂面積以 100% 認定，按 1m² 最大可鋪設 0.2kW 計算（申設總容量 ÷ 屋頂面積 ≤ 0.2 kW/m²）。',
+          '3. 新建或改建中之建築物若併接建築物內線，須俟取得主管機關核發使用執照等證明文件始可併聯（無涉及建築物接電者，建照階段不影響試運轉）。'
+        ]
+      },
+      {
+        id: 'rn_s1_ground_land',
+        stage: 'stage1',
+        badge: '地面型/水面型必備｜第1章第4節一、二',
+        title: '【地面型／水面型】3個月內第一類土地謄本、非特定農業區佐證及「30工作天補租約公證書」',
+        summary: '須檢附3個月內申請之土地登記第一類謄本及非屬「特定農業區」佐證；第三型地面型須於審查意見書發文後 30 個工作天內補附租約公證書封面影本。',
+        basis: '第1章第4節一(二)、二(二)、附表2告知事項5',
+        types: ['ground_water'],
+        opt: null,
+        subItems: [
+          '1. 檢附土地所有權狀影本或土地登記謄本（第三型地面型併配電系統者，須檢附「3 個月內申請之土地登記第一類謄本」）。',
+          '2. 檢附具有土地使用分區資料之文件，佐證設置區域非位於不可設置太陽光電之「特定農業區」（建築用地或水利用地除外）。',
+          '3. 鋪設面積合理性檢核：土地面積以申請案之法定土地使用比例認定，每 1m² 最大可鋪設 0.2kW。',
+          '4. 【致命期限卡控】第三型地面型太陽光電於區處核發審查意見書後「30 個工作天內」，必須提供與地主租賃契約公證書封面影本（土地過戶中得以買賣契約公證書封面＋未完成過戶之新地主租約公證書封面替代），逾期逕予取消案件！'
+        ]
+      },
+      {
+        id: 'rn_s1_non_owner',
+        stage: 'stage1',
+        badge: '非所有權人必附｜範例17 / 範例18 / 附件12',
+        title: '【設置者非建物／土地所有權人】所有權人使用同意書、租約或借道同意書',
+        summary: '設置者非建物或土地所有權人時，須檢附建物改良物使用同意書(範例17)、土地使用同意書(範例18)或借道用戶線路同意書(附件12)。',
+        basis: '附表2第1(2)C項、附件12、範例17、範例18',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'nonOwner',
+        subItems: [
+          '1. 【屋頂型非屋主】檢附「建築改良物使用同意書（範例17）」或屋頂租賃契約（政府單位經管場址得以同意設置證明文件替代）。',
+          '2. 【地面型非地主】檢附「土地使用同意書（範例18）」及3個月內申請之土地登記第一類謄本（若為室外配電場所向地主承租土地，僅需設置者承諾書，免附地主同意書）。',
+          '3. 【非用電戶借道用戶內線】檢附「附件12 再生能源發電設備設置者(非用戶)借道用戶線路併接同意書」（須黏貼身分證明或附公司登記證明，且僅限全額躉售或併聯不躉售）。'
+        ]
+      },
+      {
+        id: 'rn_s1_special_local',
+        stage: 'stage1',
+        badge: '特定地區與農業容許｜附表2告知事項12、13',
+        title: '【農業容許／漁電共生／特定縣市】綠能設施容許使用文件與地方政府支持文件',
+        summary: '高雄屋頂型漁電共生須附海洋局農業/水產養殖容許文件；花蓮地面型須附花蓮縣府同意文件；同意備案加註容許文件者須於試運轉時檢附。',
+        basis: '第6章第2節(二十一)、附表2第1(3)項',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'specialLocal',
+        subItems: [
+          '1. 【高雄市屋頂型漁電共生】除完成自建升壓站之太陽光電發電業外，申請併聯審查須檢附高雄市政府海洋局核發之農業設施容許（水產養殖設施容許）文件。',
+          '2. 【花蓮縣地面型再生能源】申請併聯審查須另檢附花蓮縣政府同意（支持）文件。',
+          '3. 【併聯試運轉時檢附綠能容許】同意備案或施工許可載明併聯試運轉須檢附「綠能設施容許使用證明文件」之案場，應於申請併聯試運轉時提送該文件（完成併聯函台電將副知地方農業單位）。'
+        ]
+      },
+
+      // ==================== 貳、同意備案、簽約與細部協商圖說 ====================
+      {
+        id: 'rn_s2_eng_drawings',
+        stage: 'stage2',
+        badge: '工程圖說與細部協商｜附件7、附表4~5、附件13',
+        title: '發電系統工程圖說（附件7）、併聯協議書（附表4）與細部協商紀錄（附件13）',
+        summary: '檢附合併乙卷每頁用印之工程圖說（含昇位圖、系統單線圖、銜接點配置圖、躉售計量配置圖及設計計算資料），於併聯試運轉前完成細部協商。',
+        basis: '第6章第1節、附件7、附件13、附表4~5',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 封面上註明聯絡人、電話、地址，合併為乙卷並由申請人或受委託設計監造者「每頁用印」。',
+          '2. 附表4「再生能源發電系統併聯協議書」及附表5「保護設備資料表」（變流器內建保護功能者免附表5）。',
+          '3. 細部設計圖：(a)昇位圖（範例10，發電機組與變流器得同時並列最多5種品牌）；(b)系統單線圖（範例11，註明併聯電壓、表前/表後開關、CT規格、電驛與電子式電驛電源；免附模組組列配置與表後開關後單線圖）；(c)銜接點配置圖（範例12，框示設置地址地界線）；(d)躉售計量設備配置圖（範例13）。',
+          '4. 設計計算資料：各相間不平衡檢討（低壓三相相間差≤5kVA）、保護協調(故障電流)檢討、壓降與線損率檢討、接地系統檢討、防止單獨運轉保護檢討、功因與諧波檢討。',
+          '5. 模組與變流器認證文件：提供標檢局 VPC 證書（模組亦可擇一提供CNS檢驗證明）及「太陽光電模組產品登錄作業要點同意登錄文件」（無法提供登錄文件者須檢附登錄者及設置申請人聲明書各1份）。'
+        ]
+      },
+      {
+        id: 'rn_s2_vpc_expired',
+        stage: 'stage2',
+        badge: 'VPC證書逾期補件｜附表2第2(4)項 & 附表4註4',
+        title: '【VPC 證書已過期】模組或變流器製造商出具之「出廠證明影本」',
+        summary: '若所檢附之太陽光電模組或變流器 VPC 證書已過有效期限，必須同時補附該製造商出具之出廠證明影本，證明係於證書有效期限內購買。',
+        basis: '附表2第2(4)A項、附表4註4',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'vpcExpired',
+        subItems: [
+          '1. 核對現場使用之太陽光電模組及變流器（Inverter）序號與製造出廠日期。',
+          '2. 檢附已逾期之標檢局自願性產品驗證證書（VPC）影本，並同時檢附「該模組／變流器製造商出具之出廠證明影本」，證明確實於 VPC 證書有效期限內生產購買。',
+          '3. 確認變流器 VPC 證書登載之額定電壓與本案併聯點電壓相符（第6章第1節(十一)3）。'
+        ]
+      },
+      {
+        id: 'rn_s2_internal_rules',
+        stage: 'stage2',
+        badge: '併用戶內線專屬｜第3章第7節 & 附件13',
+        title: '【併接用戶內線】AMI智慧電表、公共空間可上鎖隔離開關、防逆電驛與總電源切離測試',
+        summary: '確認併內線躉售組合符合表2規定、裝設AMI智慧電表、於公共空間明顯處設可上鎖隔離開關，並配合試運轉總電源切離測試（或負載測試）。',
+        basis: '第3章第7節、第6章第1節、附件2第5(一)5條、附件13',
+        types: ['internal_line'],
+        opt: null,
+        subItems: [
+          '1. 躉售組合合法性檢核（第3章第7節表2）：確認非「借道他人內線餘電躉售」、非「全額與餘電混搭」；若與「併聯不躉售」混搭，不躉售迴路已裝設實體防逆設備（如附圖5搭配EMS）。',
+          '2. 隔離開關設置：併接低壓系統者於電表或責任分界點附近安裝可見、可操作且開啟狀態可上鎖之隔離設備；併內線案件應於公共空間明顯可見、可操作處裝設隔離開關供台電人員進出作業。',
+          '3. AMI 智慧電表與通訊：原既設用戶電表若非 AMI 須配合更換，電表箱裝設位置通訊不良者須由設置者協助改善。',
+          '4. 開關容量與三相中性線：低壓側開關不得超過 1,600AT（除非盤體銅排可配合大口徑儀器訂製）；三相系統須引接中性線供電表使用。',
+          '5. 試運轉切離測試準備：除醫院（不含診所）、重要用戶、需24小時用電特殊場所（改備負載測試）外，均須配合「總電源切離測試」。'
+        ]
+      },
+      {
+        id: 'rn_s2_booster_storage',
+        stage: 'stage2',
+        badge: '共同升壓站 & 光儲專屬｜第1章第3節、第3章第8節、附件8',
+        title: '【共同升壓站／光儲競標案】籌設30日曆天保證金、租約公證、14日換發意見書與雙簽證',
+        summary: '共同升壓站設置者取得籌設許可30日曆天內登記繳保證金；共用者3個月內完成租約公證；光儲得標案14日曆天內換發意見書並具電機/消防雙簽證。',
+        basis: '第1章第3節五、第3章第8節、附件8、附表12~13',
+        types: ['booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 【共同升壓站設置者】取得電業籌設許可後「30 個日曆天內」向區處正式函文登記並繳交保證金（69kV 500元/kW、161kV 350元/kW，最低200萬元；免提供共用容量者167或175元/kW），逾期不予保留共用容量。',
+          '2. 【共同升壓站共用者】台電核發分配結果次日起「3 個月內」須與設置者完成「共同升壓站引接同意暨租賃契約書」簽訂，並於雙方蓋章次日起「7 日內」辦理公證（設置者與共用者同一人免簽租約）；分配次日起「6 個月內」須取得籌設許可或同意備案。',
+          '3. 【輸電級換發配電級意見書】與共同升壓站相同併接點之1份輸電級審查意見書，最多得換發為該共同升壓站配電級審查意見書 4 份（免再繳審查作業費）。',
+          '4. 【光儲競標得標案】取得能源署核配同意函起「14 個日曆天內」向區處申請換發審查意見書；儲能完工後須提交「電機技師與消防設備師竣工簽證」，填報附表12（光儲資源註冊表）及附表13（SD-WAN環境調查表），並通過電力調度處通訊能力測試取得「量測設備測試合格函（範例19）」。'
+        ]
+      },
+      {
+        id: 'rn_s2_hv_reqs',
+        stage: 'stage2',
+        badge: '高壓以上併網必備｜附件2、附件27、附表5',
+        title: '【高壓以上系統】系統衝擊報告、介面保護電驛資料（附件27）、遙控跳脫與調度電話',
+        summary: '併接11.4kV/22.8kV/69kV+系統須繳交審查作業費(8.5萬/34萬)、檢附附件27保護協調資料，並於責任分界點設遙控跳脫裝置及控制室設調度專用/專線電話。',
+        basis: '第2章第2節、第6章第1節、附件2第3(六)、7(九)條、附件27',
+        types: ['roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'hv',
+        subItems: [
+          '1. 系統衝擊分析報告：受理時附申請電網參數函文者，於台電函復參數後 2 週內補附系衝報告（註：併同一特高壓用戶內線之第三型屋頂型光電累計未達20MW者免附系衝報告）。',
+          '2. 介面協商保護電驛資料（附件27）：(1)故障電流計算書（高壓系統三相短路電流須<10,000A）；(2)保護電驛標置設定計算書；(3)保護電驛標置一覽表；(4)保護協調曲線圖；(5)電驛完整說明書；(6)含設備阻抗參數之系統單線圖。',
+          '3. 責任分界點遙控跳脫裝置與防孤島電驛：責任分界點裝設遙控跳脫裝置，發電機出口加裝頻率變化率電驛(ROCOF)及相位跳動電驛(VSR)等。',
+          '4. 調度專用／專線電話（附件2第7(九)條）：高壓系統於控制室設「調度專用電話」（不經總機、具話中插接）；69kV/161kV設專用電話；345kV設直通專線電話至中央調度中心。加壓前須經試話良好。',
+          '5. 售電旬報義務（附件14第一條(20)）：總裝置容量達 1,000kW 以上且併接 11.4kV 高壓以上者，自首次併聯日起須每小時記錄售電量，每旬結束次日寄送「售電旬報」至電力調度處。'
+        ]
+      },
+
+      // ==================== 參、報竣工掛表與併聯試運轉自檢 ====================
+      {
+        id: 'rn_s3_formC_complete',
+        stage: 'stage3',
+        badge: '報竣工核心表單｜附表6 竣工報告單(表C)',
+        title: '再生能源自用發電設備竣工報告單（附表6 表C）及單線系統圖三方一致簽章',
+        summary: '填妥表C正面暗管10項、一般10項及自用發電設備8項檢查紀錄，確認單線系統圖與表C之用戶/監造者/承裝業簽章完全相同，背面黏貼公會竣工會員證明。',
+        basis: '第6章第2節一(二)、附表6(表C)、附件28',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 【三方簽章一致性】表C正面與單線系統圖右下角均須蓋妥「用戶(設置者)簽章」、「監造者簽章」、「承裝業簽章」，且兩者印章必須完全相同。',
+          '2. 【單線圖必註明數據】單線系統圖須詳註併聯接電方式、裝置容量、配線種類、線徑、管徑、管別、保護設備，以及於接戶開關(總開關)實測之「全系統絕緣電阻」及「各接地點接地電阻」。',
+          '3. 【暗管檢查10項】金屬/非金屬管確認、線管配件規格、連接規定、對配件連接、彎曲規定、金屬管接地緊密啣接、PVC管伸縮接頭、導線管線徑、隱蔽處所裝置、其他。',
+          '4. 【一般檢查10項】進屋管防水措施、電表位置高度適當、導線設備與設計圖相符、設計圖已審查合規、導線間隔距離、導線連接及出線、特殊場所裝置、內線器材合格/VPC標識、設戶合規、其他。',
+          '5. 【自用發電設備檢查8項】裝置場所與審訖圖說相符、併接方式相符、裝置容量/規格/輸出/效率符合核准文件、Inverter規格及認證資料相符、遙控跳脫/監視/通訊設備裝設、併聯保護設備相符、防孤島動作時間(≤2秒)及復電併聯時間(建議300秒)符合核准文件、其他。',
+          '6. 【背面公會證明黏貼】實貼電氣工程工業同業公會申報竣工會員證明（併內線依原用電種類申領；併外線依責任分界點用電種類申領）或電機技師公會竣工會員證明。'
+        ]
+      },
+      {
+        id: 'rn_s3_pe_license',
+        stage: 'stage3',
+        badge: '電機技師簽證必附｜附表2第2(5)項 & 附表6',
+        title: '【≥100kW 或供公眾使用建築物】電機技師設計監造簽證、執業執照影本與公會竣工證明',
+        summary: '發電設備裝置容量達 100kW 以上或設置於供公眾使用建築物者，應由依法執業之電機技師設計監造簽證，報竣時檢附執照影本（親簽用印）及技師公會竣工會員證明。',
+        basis: '附表2第2(5)項、附表6表C背面',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'ge100kw',
+        subItems: [
+          '1. 確認發電系統工程圖說（附件7）及竣工單線系統圖均已由設計／監造電機技師簽署並加蓋執業圖記。',
+          '2. 檢附有效期限內之「電機技師執業執照影本」（須由技師親簽及用印）。',
+          '3. 於竣工報告單（附表6 表C）背面黏貼「電機技師公會會員證明（竣工用）」。'
+        ]
+      },
+      {
+        id: 'rn_s3_meter_contract',
+        stage: 'stage3',
+        badge: '試運轉掛表必備｜第6章第2節一、附件23~24',
+        title: '躉售計量設備租賃合約、同意備案影本與雙向電子式電表／通訊管路準備',
+        summary: '報竣試運轉時須備妥計量設備租賃合約（自備者附標檢局檢定合格文件）、同意備案影本、購售電契約，並確認電表箱已預留 1 英吋 AMI 通訊連通管。',
+        basis: '第6章第2節一、附件23、附件24第五點',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 檢附「躉售計量設備租賃合約」（若計量電表或變比器由設置者自備，應檢附經濟部標檢局檢定合格文件及TAF/台電0.3S級試驗報告）。',
+          '2. 檢附「同意備案文件影本 1 份」及「已簽訂之再生能源電能購售契約」（第一型另附主管機關核發之「工作許可證」）。',
+          '3. 現場電表箱與通訊管路確認（附件24）：電表箱邊緣銳角防碰撞處理、鹽害/雨線外採不鏽鋼或耐燃非金屬板、預埋(留) 1英吋(28mm) AMI 通訊連通管（兩端加管帽防水防蟲並穿通繩）。',
+          '4. 現場實際裝置容量確認：現場裝設之模組與變流器總容量「絕不可高於」購售契約記載容量（高於契約容量者台電不予併聯並拍照存證；若低於契約容量得先併聯再辦理換文修約）。'
+        ]
+      },
+
+      // ==================== 肆、DREAMS 監控回傳與設備登記正式躉售 ====================
+      {
+        id: 'rn_s4_dreams',
+        stage: 'stage4',
+        badge: '≥500kW 或光儲必辦｜第7章、附件16~21、附表7',
+        title: '【DREAMS 監控回傳】報竣前申請加入 DREAMS、裝表後 1 個月內回傳並交「附表7 安裝自主檢查表」',
+        summary: '同場址總容量達500kW以上（或擴大饋線>100kW、光儲案），報竣前須註冊並申請加入DREAMS，檢驗時查驗認證PV-Gateway/雲端設備，裝表後1個月內提交附表7與6張照片。',
+        basis: '第6章第2節(十六)(十七)、第7章第1節、附表7、附件29',
+        types: ['roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: 'ge500kw',
+        subItems: [
+          '1. 【報竣前線上註冊與申請】以公司為單位持工商憑證註冊 DREAMS 帳號（https://dreams.plato-io.com），填寫「附件29 配電級再生能源監控設備申請表」（採自購 PV-Gateway 者須先向中華/遠傳申請 4G VPN 門號與固定IP；採委託雲端廠商者須確認雲端系統已通過台電連線能力與 Nessus 弱點掃描認證）。',
+          '2. 【環境感測器裝設】太陽光電案場必須裝設「日照計 (W/m²)」；風力案場必須裝設「風速計 (m/s)」。',
+          '3. 【報竣時檢附】報竣時須檢附「附件29 再生能源監控設備申請表」，台電檢驗接電時將現場核對認證監控設備或資料蒐集器型號外觀（設備與通訊品牌產地不得為大陸地區）。',
+          '4. 【裝表後 1 個月內死線】裝表後 1 個月內必須完成 DNP3.0（每整點/15/30/45分定時回報及 Dead Band 異動回報）連線測試，填妥「附表7 安裝自主檢查表」（抄錄電表與DREAMS系統一致數值，並實貼安裝施工後照片 6 張）寄送區營業處規劃課審核。逾 1 個月未完成上線者，台電將依規定解聯！'
+        ]
+      },
+      {
+        id: 'rn_s4_formal_sell',
+        stage: 'stage4',
+        badge: '正式撥款必備｜第6章第3節、附表8',
+        title: '簽約日起 1 年內取得「設備登記文件」並填具「開始躉售電能登記單」辦理正式購售電',
+        summary: '於購售電契約簽約日起 1 年內取得主管機關設備登記函（或電業執照/自用發電登記證），檢附文件與開始躉售登記單洽台電抄表，回溯以首次併聯日起算躉購費率。',
+        basis: '第1章第2節十、第6章第2節八、第6章第3節',
+        types: ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'],
+        opt: null,
+        subItems: [
+          '1. 【簽約 1 年內取得設備登記】務必於購售電契約簽約日起 1 年內向能源署或地方政府取得設備登記文件（逾期未取得且經廢止同意備案者，台電將終止契約並解聯）。',
+          '2. 【正式開始躉售應備文件】檢附：(a)「設備登記核准文件」影本；(b)「(開始躉售電能)登記單」（併內線者填變更用電或高壓需量電力開始躉售電能登記單），並於登記單上註明「電能購售契約編號」。',
+          '3. 【會同抄表與電費結算】台電派員抄表並核發「正式購售電能函文（範例8）」，結算試運轉期間電費，並正式按月（≥100kW）或每2個月（<100kW）計付躉售電費。',
+          '4. 【營運期間資料申報提醒】多(機)組發電設備者，每期抄表日次日起 3 個工作日內應提供「發電產量紀錄表」；裝置容量 ≥1,000kW 且併高壓以上者，每旬結束次日應寄送「售電旬報」至電力調度處。'
+        ]
+      }
+    ];
+
+    // 3. 系統狀態管理
+    let appState = {
+      currentTab: 'overview',
+      siteType: 'roof_std', // 'roof_small' | 'roof_std' | 'ground_water' | 'internal_line' | 'booster_storage'
+      fontScale: 115,
+      printFontSize: '12.5pt',
+      options: {
+        ge100kw: true,
+        ge500kw: false,
+        hv: false,
+        nonOwner: true,
+        vpcExpired: false,
+        specialLocal: false
+      },
+      meta: {
+        siteName: '大發工業區廠房屋頂型太陽光電案場（499kWp）',
+        caseNo: '115-PV-04821',
+        meterNo: '05-42-8819-00-2',
+        applicant: '綠能永續能源股份有限公司',
+        contractor: '宏達機電承裝業 / 王志明 電機技師',
+        targetDate: getOffsetDateStr(30),
+        opinionDate: getOffsetDateStr(-10),
+        consentDate: getOffsetDateStr(15),
+        contractDate: getOffsetDateStr(35)
+      },
+      cardStates: {}
+    };
+
+    function getOffsetDateStr(days) {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    function initCardStates() {
+      SITE_CHECKLIST_DB.forEach(c => {
+        if (!appState.cardStates[c.id]) {
+          appState.cardStates[c.id] = {
+            status: 'pending', // 'pending' | 'ok' | 'issue'
+            note: '',
+            expanded: false,
+            print: true
+          };
+        }
+      });
+    }
+
+    function loadStorage() {
+      try {
+        const raw = localStorage.getItem('taipower_re_platform_v1');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {
+        console.warn('無法載入本地資料', e);
+      }
+      initCardStates();
+    }
+
+    function saveStorage() {
+      try {
+        localStorage.setItem('taipower_re_platform_v1', JSON.stringify(appState));
+      } catch (e) {
+        console.warn('無法儲存本地資料', e);
+      }
+    }
+
+    // 護眼大字體縮放控制
+    function setFontScale(scaleVal, silent = false) {
+      let scale = parseInt(scaleVal, 10);
+      if (isNaN(scale)) scale = 115;
+      scale = Math.max(90, Math.min(160, scale));
+      appState.fontScale = scale;
+
+      const px = ((16 * scale) / 100).toFixed(2);
+      document.documentElement.style.setProperty('--base-font-size', `${px}px`);
+
+      const slider = document.getElementById('fontScaleSlider');
+      if (slider) slider.value = scale;
+      const lbl = document.getElementById('fontScaleLabel');
+      if (lbl) lbl.textContent = `${scale}%`;
+
+      [100, 115, 130, 145].forEach(preset => {
+        const btn = document.getElementById(`fontBtn_${preset}`);
+        if (!btn) return;
+        if (scale === preset) {
+          btn.className = 'px-2 py-1 rounded text-xs font-bold transition bg-amber-400 text-slate-950 shadow';
+        } else {
+          btn.className = 'px-2 py-1 rounded text-xs font-bold transition bg-slate-700 text-slate-200 hover:bg-slate-600';
+        }
+      });
+
+      saveStorage();
+      if (!silent) {
+        showToast(`網頁文字大小已調整為 ${scale}%`);
+      }
+    }
+
+    function stepFontScale(delta) {
+      setFontScale((appState.fontScale || 115) + delta);
+    }
+
+    function updatePrintFontSize(ptVal) {
+      appState.printFontSize = ptVal;
+      document.documentElement.style.setProperty('--print-font-size', ptVal);
+      const previewBox = document.getElementById('printPreviewBox');
+      if (previewBox) previewBox.style.fontSize = ptVal;
+      saveStorage();
+      renderPrintDocument();
+      showToast(`A4 紙本列印字體已設為 ${ptVal}`);
+    }
+
+    // 浮動通知
+    function showToast(msg, type = 'info') {
+      const box = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      const bg = type === 'success' ? 'bg-emerald-800 border-emerald-500' : 'bg-slate-800 border-slate-600';
+      el.className = `${bg} text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg border flex items-center gap-2 transition-all duration-300 pointer-events-auto`;
+      el.innerHTML = `<i class="fa-solid fa-circle-check text-amber-300"></i><span>${msg}</span>`;
+      box.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 2600);
+    }
+
+    // 主分頁切換
+    function switchTab(tab) {
+      appState.currentTab = tab;
+      ['overview', 'guide', 'print', 'tools'].forEach(t => {
+        const sec = document.getElementById(`tabContent_${t}`);
+        const btn = document.getElementById(`tabBtn_${t}`);
+        if (t === tab) {
+          sec.classList.remove('hidden');
+          btn.className = 'tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2 bg-amber-400 text-slate-950 shadow-sm';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60 hover:text-white';
+        }
+      });
+      if (tab === 'print') renderPrintDocument();
+    }
+
+    // 分頁1：階段細節展開抽屜
+    let activeStageKey = null;
+    function toggleStageDetail(key) {
+      const drawer = document.getElementById('stageDetailDrawer');
+      if (activeStageKey === key && !drawer.classList.contains('hidden')) {
+        drawer.classList.add('hidden');
+        activeStageKey = null;
+        return;
+      }
+      activeStageKey = key;
+      const d = STAGE_DETAILS[key];
+      drawer.classList.remove('hidden');
+      drawer.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-300 pb-2.5 mb-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="bg-slate-900 text-amber-300 text-xs font-bold px-2.5 py-0.5 rounded">${d.badge}</span>
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base">${d.title}</h4>
+          </div>
+          <button onclick="document.getElementById('stageDetailDrawer').classList.add('hidden')" class="text-xs font-bold text-slate-600 hover:text-slate-900 px-2.5 py-1 rounded bg-slate-200/70">
+            <i class="fa-solid fa-xmark mr-1"></i>收合細節
+          </button>
+        </div>
+        ${d.html}
+      `;
+    }
+
+    // 分頁1：通則手風琴展開
+    function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    // 分頁2：選擇案場類型
+    function selectSiteType(type) {
+      appState.siteType = type;
+
+      // 智慧連動預設附加條件
+      if (type === 'roof_small') {
+        appState.options.ge100kw = false;
+        appState.options.ge500kw = false;
+        appState.options.hv = false;
+      } else if (type === 'ground_water') {
+        appState.options.ge100kw = true;
+        appState.options.hv = true;
+      } else if (type === 'booster_storage') {
+        appState.options.ge100kw = true;
+        appState.options.ge500kw = true;
+        appState.options.hv = true;
+      }
+
+      syncOptionsToCheckboxes();
+      updateSiteTypeUI();
+      renderChecklistCards();
+      renderPrintDocument();
+      saveStorage();
+
+      const names = {
+        roof_small: 'A. 屋頂型（<20kW 併低壓內線－免併網審查）',
+        roof_std: 'B. 屋頂型（20kW ~ <2,000kW 一般配電級）',
+        ground_water: 'C. 地面型／水面型（含 ≥2,000kW 大容量案場）',
+        internal_line: 'D. 併接用戶內線（自發自用／餘電／借道／不躉售）',
+        booster_storage: 'E. 共同升壓站／光儲競標案場'
+      };
+      showToast(`已切換案場類型為「${names[type]}」`);
+    }
+
+    function updateSiteTypeUI() {
+      const types = ['roof_small', 'roof_std', 'ground_water', 'internal_line', 'booster_storage'];
+      types.forEach(t => {
+        const el = document.getElementById(`typeCard_${t}`);
+        if (!el) return;
+        if (t === appState.siteType) {
+          el.className = 'text-left p-4 rounded-xl border-2 border-emerald-600 bg-emerald-50/70 shadow-sm transition';
+        } else {
+          el.className = 'text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 transition';
+        }
+      });
+
+      const names = {
+        roof_small: 'A. 屋頂型（<20kW 併低壓用戶內線－免併網審查）',
+        roof_std: 'B. 屋頂型（20kW ~ <2,000kW 一般配電級）',
+        ground_water: 'C. 地面型／水面型（含 ≥2,000kW 大容量案場）',
+        internal_line: 'D. 併接用戶內線（自發自用／餘電躉售／借道全額躉售／併聯不躉售）',
+        booster_storage: 'E. 共同升壓站（設置者／共用者）與光儲結合案場'
+      };
+      const lbl = document.getElementById('printSiteTypeLabel');
+      if (lbl) lbl.textContent = names[appState.siteType];
+    }
+
+    function syncOptionsToCheckboxes() {
+      document.getElementById('opt_ge100kw').checked = !!appState.options.ge100kw;
+      document.getElementById('opt_ge500kw').checked = !!appState.options.ge500kw;
+      document.getElementById('opt_hv').checked = !!appState.options.hv;
+      document.getElementById('opt_nonOwner').checked = !!appState.options.nonOwner;
+      document.getElementById('opt_vpcExpired').checked = !!appState.options.vpcExpired;
+      document.getElementById('opt_specialLocal').checked = !!appState.options.specialLocal;
+    }
+
+    function updateOptions() {
+      appState.options.ge100kw = document.getElementById('opt_ge100kw').checked;
+      appState.options.ge500kw = document.getElementById('opt_ge500kw').checked;
+      appState.options.hv = document.getElementById('opt_hv').checked;
+      appState.options.nonOwner = document.getElementById('opt_nonOwner').checked;
+      appState.options.vpcExpired = document.getElementById('opt_vpcExpired').checked;
+      appState.options.specialLocal = document.getElementById('opt_specialLocal').checked;
+
+      renderChecklistCards();
+      renderPrintDocument();
+      saveStorage();
+    }
+
+    function isCardApplicable(card) {
+      if (!card.types.includes(appState.siteType)) return false;
+      if (!card.opt) return true;
+      return !!appState.options[card.opt];
+    }
+
+    // 渲染分頁2架構式卡片清單
+    function renderChecklistCards() {
+      const container = document.getElementById('checklistCardsContainer');
+      const stages = [
+        { key: 'stage1', title: '壹、併聯審查與面積／權屬證明文件（階段 1）', icon: 'fa-file-contract' },
+        { key: 'stage2', title: '貳、同意備案、簽約與細部協商圖說（階段 2）', icon: 'fa-compass-drafting' },
+        { key: 'stage3', title: '參、報竣工掛表與併聯試運轉現場自檢（階段 3）', icon: 'fa-plug-circle-check' },
+        { key: 'stage4', title: '肆、DREAMS 監控回傳與設備登記正式躉售（階段 4）', icon: 'fa-satellite-dish' }
+      ];
+
+      let html = '';
+      let totalCount = 0;
+      let doneCount = 0;
+
+      stages.forEach(stObj => {
+        const items = SITE_CHECKLIST_DB.filter(c => c.stage === stObj.key && isCardApplicable(c));
+        if (items.length === 0) return;
+
+        html += `
+          <div class="space-y-3.5">
+            <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2">
+              <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                <i class="fa-solid ${stObj.icon} text-emerald-700"></i>
+                <span>${stObj.title}</span>
+              </h3>
+              <span class="text-xs font-bold text-slate-500">本階段共 ${items.length} 項檢核模組</span>
+            </div>
+            <div class="grid grid-cols-1 gap-3.5">
+        `;
+
+        items.forEach(card => {
+          const st = appState.cardStates[card.id] || { status: 'pending', note: '', expanded: false, print: true };
+          totalCount++;
+          if (st.status === 'ok') doneCount++;
+
+          const borderCls = st.status === 'ok'
+            ? 'border-emerald-500 bg-emerald-50/20'
+            : st.status === 'issue'
+              ? 'border-rose-400 bg-rose-50/20'
+              : 'border-slate-200 bg-white';
+
+          html += `
+            <div class="rounded-xl border-2 ${borderCls} shadow-sm transition overflow-hidden">
+              <div class="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="space-y-1.5 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-slate-900 text-amber-300">${card.badge}</span>
+                    <h4 class="font-bold text-slate-900 text-sm sm:text-base">${card.title}</h4>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${card.summary}</p>
+                  <div class="flex flex-wrap items-center gap-3 pt-1">
+                    <button type="button" onclick="toggleCardDetail('${card.id}')" class="text-xs font-bold text-sky-800 hover:text-sky-950 inline-flex items-center gap-1.5 bg-sky-50 hover:bg-sky-100 px-3 py-1 rounded-lg border border-sky-200 transition">
+                      <i class="fa-solid ${st.expanded ? 'fa-chevron-up' : 'fa-list-check'}"></i>
+                      <span>${st.expanded ? '收合細項清單' : `展開查看細項與法規依據 (${card.subItems.length} 項)`}</span>
+                    </button>
+                    <span class="text-xs text-slate-500">手冊依據：${card.basis}</span>
+                  </div>
+                </div>
+
+                <!-- 右側勾稽控制 -->
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                  <div class="inline-flex rounded-lg border border-slate-300 bg-white p-0.5">
+                    <button type="button" onclick="setCardStatus('${card.id}', 'ok')" class="px-3 py-1.5 rounded-md text-xs font-bold transition ${st.status === 'ok' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}">
+                      ✓ 已備齊/合格
+                    </button>
+                    <button type="button" onclick="setCardStatus('${card.id}', 'issue')" class="px-3 py-1.5 rounded-md text-xs font-bold transition ${st.status === 'issue' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}">
+                      ✗ 待補/待辦
+                    </button>
+                  </div>
+
+                  <input type="text" value="${escapeHtml(st.note)}" oninput="setCardNote('${card.id}', this.value)" placeholder="填寫文號/實測值/備註..." class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none w-full sm:w-48 bg-white">
+
+                  <label class="flex items-center gap-1 text-xs font-bold text-slate-700 cursor-pointer select-none px-2 py-1.5 rounded hover:bg-slate-100" title="勾選後納入 A4 列印勾稽表">
+                    <input type="checkbox" ${st.print ? 'checked' : ''} onchange="setCardPrint('${card.id}', this.checked)" class="rounded text-emerald-700">
+                    <span>🖨️ 列印</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 漸進式展開細項 -->
+              <div id="detail_${card.id}" class="${st.expanded ? '' : 'hidden'} bg-slate-50 border-t border-slate-200 px-5 py-4">
+                <div class="text-xs font-bold text-slate-800 mb-2 flex items-center justify-between">
+                  <span>📋 詳細查核點與法規規範（可於列印中心設定是否一併印出細項）：</span>
+                  <button onclick="toggleCardDetail('${card.id}')" class="text-slate-600 hover:text-slate-900 font-bold"><i class="fa-solid fa-xmark mr-1"></i>收合</button>
+                </div>
+                <ul class="space-y-1.5 text-xs text-slate-800 leading-relaxed">
+                  ${card.subItems.map(sub => `
+                    <li class="flex items-start gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
+                      <i class="fa-regular fa-square-check text-emerald-700 mt-0.5 shrink-0"></i>
+                      <span>${sub}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+      });
+
+      container.innerHTML = html;
+
+      const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+      document.getElementById('headerProgressText').textContent = `${doneCount} / ${totalCount} 項 (${pct}%)`;
+      document.getElementById('headerProgressBar').style.width = `${pct}%`;
+    }
+
+    function toggleCardDetail(id) {
+      if (appState.cardStates[id]) {
+        appState.cardStates[id].expanded = !appState.cardStates[id].expanded;
+        saveStorage();
+        renderChecklistCards();
+      }
+    }
+
+    function expandAllCards(expand) {
+      SITE_CHECKLIST_DB.forEach(c => {
+        if (isCardApplicable(c) && appState.cardStates[c.id]) {
+          appState.cardStates[c.id].expanded = expand;
+        }
+      });
+      saveStorage();
+      renderChecklistCards();
+    }
+
+    function setCardStatus(id, status) {
+      const st = appState.cardStates[id];
+      if (st) {
+        st.status = (st.status === status) ? 'pending' : status;
+        saveStorage();
+        renderChecklistCards();
+        renderPrintDocument();
+      }
+    }
+
+    function setCardNote(id, note) {
+      if (appState.cardStates[id]) {
+        appState.cardStates[id].note = note;
+        saveStorage();
+        renderPrintDocument();
+      }
+    }
+
+    function setCardPrint(id, checked) {
+      if (appState.cardStates[id]) {
+        appState.cardStates[id].print = checked;
+        saveStorage();
+        renderPrintDocument();
+      }
+    }
+
+    function batchMarkStatus(status) {
+      SITE_CHECKLIST_DB.forEach(c => {
+        if (isCardApplicable(c) && appState.cardStates[c.id]) {
+          appState.cardStates[c.id].status = status;
+        }
+      });
+      saveStorage();
+      renderChecklistCards();
+      renderPrintDocument();
+      showToast(status === 'ok' ? '已將本頁適用項目全部標為「已備齊/合格」' : '已重置勾稽狀態', 'success');
+    }
+
+    // 分頁3：A4 勾稽表設定與列印中心
+    function saveMetaAndRefreshPrint() {
+      appState.meta.siteName = document.getElementById('meta_siteName').value;
+      appState.meta.caseNo = document.getElementById('meta_caseNo').value;
+      appState.meta.meterNo = document.getElementById('meta_meterNo').value;
+      appState.meta.applicant = document.getElementById('meta_applicant').value;
+      appState.meta.contractor = document.getElementById('meta_contractor').value;
+      appState.meta.targetDate = document.getElementById('meta_targetDate').value;
+      saveStorage();
+      renderPrintDocument();
+    }
+
+    function toggleAllPrintSections(checked) {
+      document.querySelectorAll('.pSec-cb').forEach(cb => cb.checked = checked);
+      renderPrintDocument();
+    }
+
+    function renderPrintDocument() {
+      const printMode = document.querySelector('input[name="printMode"]:checked')?.value || 'all';
+      const includeSub = document.getElementById('printIncludeSubItems').checked;
+      const showHeader = document.getElementById('pSec_header').checked;
+      const showS1 = document.getElementById('pSec_stage1').checked;
+      const showS2 = document.getElementById('pSec_stage2').checked;
+      const showS3 = document.getElementById('pSec_stage3').checked;
+      const showS4 = document.getElementById('pSec_stage4').checked;
+      const showSign = document.getElementById('pSec_sign').checked;
+
+      const typeNames = {
+        roof_small: 'A. 屋頂型（<20kW 併低壓用戶內線－免併網審查）',
+        roof_std: 'B. 屋頂型（20kW ~ <2,000kW 一般配電級）',
+        ground_water: 'C. 地面型／水面型（含 ≥2,000kW 大容量案場）',
+        internal_line: 'D. 併接用戶內線（自發自用／餘電躉售／借道全額躉售／併聯不躉售）',
+        booster_storage: 'E. 共同升壓站（設置者／共用者）與光儲結合案場'
+      };
+
+      let html = `
+        <div class="space-y-4 text-black">
+          <div class="text-center border-b-2 border-black pb-2.5">
+            <h1 class="text-lg sm:text-xl font-bold tracking-wide">台電配電級再生能源併網與報竣工「業者自主檢核勾稽表」</h1>
+            <p class="text-xs text-slate-700 mt-1">
+              依據《台電配電手冊（八）再生能源篇（114.03.11修訂版）》編製 ｜ 案場類型：<strong>${typeNames[appState.siteType]}</strong>
+            </p>
+          </div>
+      `;
+
+      if (showHeader) {
+        html += `
+          <table class="w-full text-xs border-collapse border border-black print-table">
+            <tbody>
+              <tr>
+                <td class="bg-slate-100 font-bold w-32 border border-black">案場名稱 / 場址</td>
+                <td class="border border-black" colspan="3">${escapeHtml(appState.meta.siteName)}</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold w-32 border border-black">台電受理編號</td>
+                <td class="border border-black w-1/3">${escapeHtml(appState.meta.caseNo)}</td>
+                <td class="bg-slate-100 font-bold w-32 border border-black">案場 / 既設電號</td>
+                <td class="border border-black">${escapeHtml(appState.meta.meterNo)}</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold border border-black">再生能源設置者</td>
+                <td class="border border-black">${escapeHtml(appState.meta.applicant)}</td>
+                <td class="bg-slate-100 font-bold border border-black">承裝業 / 監造技師</td>
+                <td class="border border-black">${escapeHtml(appState.meta.contractor)}</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold border border-black">預定併聯試運轉日</td>
+                <td class="border border-black" colspan="3">${escapeHtml(appState.meta.targetDate)}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      }
+
+      const stageSections = [
+        { enabled: showS1, key: 'stage1', title: '壹、併聯審查與面積／權屬證明文件（附表2、附表3）' },
+        { enabled: showS2, key: 'stage2', title: '貳、同意備案、簽約與細部協商圖說（附件7、附件13）' },
+        { enabled: showS3, key: 'stage3', title: '參、報竣工掛表與併聯試運轉現場自檢（附表6表C、附件28）' },
+        { enabled: showS4, key: 'stage4', title: '肆、DREAMS 監控回傳與設備登記正式躉售（附表7）' }
+      ];
+
+      stageSections.forEach(sec => {
+        if (!sec.enabled) return;
+
+        const items = SITE_CHECKLIST_DB.filter(c => {
+          if (c.stage !== sec.key) return false;
+          if (!isCardApplicable(c)) return false;
+          const st = appState.cardStates[c.id] || { status: 'pending', print: true };
+          if (!st.print) return false;
+          if (printMode === 'incomplete' && st.status === 'ok') return false;
+          return true;
+        });
+
+        if (items.length === 0) return;
+
+        html += `
+          <div class="print-break-inside-avoid space-y-1">
+            <h3 class="font-bold text-xs sm:text-sm bg-slate-200 px-2.5 py-1 border-l-4 border-black">${sec.title}</h3>
+            <table class="w-full text-xs border-collapse border border-black print-table">
+              <thead>
+                <tr class="bg-slate-100">
+                  <th class="border border-black w-28 text-left">階段 / 依據</th>
+                  <th class="border border-black text-left">業者應備文件與自主檢核要點${includeSub ? '（含細項查核明細）' : ''}</th>
+                  <th class="border border-black w-28 text-center">勾稽結果</th>
+                  <th class="border border-black w-40 text-left">文號 / 實測備註</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        items.forEach(card => {
+          const st = appState.cardStates[card.id] || { status: 'pending', note: '' };
+          let statusTxt = '';
+          if (printMode === 'blank') {
+            statusTxt = '☐ 已備齊/合格';
+          } else if (st.status === 'ok') {
+            statusTxt = '<strong>☑ 已備齊/合格</strong>';
+          } else if (st.status === 'issue') {
+            statusTxt = '<strong>☒ 待補/待辦</strong>';
+          } else {
+            statusTxt = '☐ 待檢核';
+          }
+
+          const subHtml = includeSub
+            ? `<ul class="mt-1.5 pl-4 space-y-0.5 text-slate-800 list-disc">
+                ${card.subItems.map(s => `<li>${s}</li>`).join('')}
+               </ul>`
+            : '';
+
+          html += `
+            <tr>
+              <td class="border border-black align-top">
+                <div class="font-bold">${card.badge}</div>
+                <div class="text-slate-600 mt-0.5">${card.basis}</div>
+              </td>
+              <td class="border border-black align-top">
+                <div class="font-bold">${card.title}</div>
+                <div class="text-slate-700 mt-0.5">${card.summary}</div>
+                ${subHtml}
+              </td>
+              <td class="border border-black text-center align-top whitespace-nowrap pt-2">${statusTxt}</td>
+              <td class="border border-black align-top">${printMode === 'blank' ? '' : escapeHtml(st.note)}</td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table></div>`;
+      });
+
+      if (showSign) {
+        html += `
+          <div class="print-break-inside-avoid pt-2">
+            <table class="w-full text-xs border-collapse border border-black print-table text-center">
+              <thead>
+                <tr class="bg-slate-100">
+                  <th colspan="3" class="border border-black p-1.5 font-bold">
+                    送件前業者三方自主確認簽章欄（提醒：單線系統圖右下角與附表6表C竣工報告單之三方印章須完全一致）
+                  </th>
+                </tr>
+                <tr class="bg-slate-50">
+                  <th class="border border-black p-1 w-1/3">負責施工電器承裝業 簽章</th>
+                  <th class="border border-black p-1 w-1/3">設計／監造電機技師 簽章</th>
+                  <th class="border border-black p-1 w-1/3">再生能源設置者（用戶） 簽章</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="h-20">
+                  <td class="border border-black align-bottom pb-1 text-slate-500">檢查日期：　　年　　月　　日</td>
+                  <td class="border border-black align-bottom pb-1 text-slate-500">簽署日期：　　年　　月　　日</td>
+                  <td class="border border-black align-bottom pb-1 text-slate-500">用印確認</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+
+      const previewBox = document.getElementById('printPreviewBox');
+      if (previewBox) {
+        previewBox.innerHTML = html;
+        previewBox.style.fontSize = appState.printFontSize || '12.5pt';
+      }
+      document.getElementById('actualPrintContainer').innerHTML = html;
+    }
+
+    // 分頁4 工具 1：再生能源併網工程費試算器（第4章 & 附件9 & 附件11）
+    function calcGridFee() {
+      const type = document.getElementById('fee_type').value;
+      const kw = Math.max(0, parseFloat(document.getElementById('fee_kw').value) || 0);
+      const needReinforce = document.getElementById('fee_needReinforce').value === 'yes';
+      const dedicated = document.getElementById('fee_dedicated').value === 'yes';
+      const ohKm = Math.max(0, parseFloat(document.getElementById('fee_ohKm').value) || 0);
+      const ugKm = Math.max(0, parseFloat(document.getElementById('fee_ugKm').value) || 0);
+      const newTr = document.getElementById('fee_newTr').checked;
+      const proxyStepUp = document.getElementById('fee_proxyStepUp').checked;
+
+      let baseFee = 0;
+      let extraFee = 0;
+      let formulaLines = [];
+
+      if (type === 'no_sell') {
+        formulaLines.push('• 適用「第4章第1節第十二點」：僅併聯不躉售且於適當迴路裝設防逆電驛確保無逆送至台電電網，<strong>免負擔加強電力網工程費 = 0 元</strong>。');
+      } else if (type === 'booster' || type === 'ehv_roof') {
+        baseFee = Math.round(kw * 1352);
+        formulaLines.push(`• 適用「第4章第2節註4/註5」：${type === 'booster' ? '併接共同升壓站配電級案場' : '併接特高壓用戶內線屋頂型(>2,000kW)'}，統一按 <strong>1,352 元/kW</strong> 計收。`);
+        formulaLines.push(`• 計算式：${kw.toLocaleString()} kW × 1,352 元/kW = <strong>${baseFee.toLocaleString()} 元</strong>`);
+      } else if (type === 'roof_lv' || type === 'roof_hv') {
+        // 屋頂型太陽光電
+        if (dedicated || kw >= 2000) {
+          // 態樣3/4/5：使用再生能源專線或合併 ≥2,000kW，按加強電網均化單價
+          baseFee = Math.round(kw * 2068);
+          formulaLines.push(`• 適用「態樣3/4（第4章第2節）」：屋頂型使用台電新(增)設再生能源專線或同一場址合併 ≥2,000kW，按加強電網均化單價 <strong>2,068 元/kW</strong>（2.5km內）計收。`);
+          formulaLines.push(`• 基本均化費：${kw.toLocaleString()} kW × 2,068 元/kW = ${baseFee.toLocaleString()} 元`);
+          const totalKm = ohKm + ugKm;
+          if (totalKm > 2.5) {
+            const overKm = totalKm - 2.5;
+            // 若同時有架空與地下，依比例或超出部分計
+            const avgRate = ((ohKm * 803) + (ugKm * 2484)) / totalKm;
+            const overFee = Math.round(kw * overKm * avgRate);
+            extraFee += overFee;
+            formulaLines.push(`• 超出 2.5km 部分（超出 ${overKm.toFixed(2)} km，架空803 / 地下2,484 元/kW-km）：加計 <strong>${overFee.toLocaleString()} 元</strong>`);
+          }
+        } else {
+          // 未使用專線且 <2,000kW：適用附件9屋頂型累進費率
+          if (!needReinforce || kw < 50) {
+            baseFee = 0;
+            formulaLines.push(`• 適用「態樣1（附件9）」：未使用再生能源專線、合併未達 2,000kW，且無需加強電力網或累計未達 50kW，<strong>免收併網工程費 = 0 元</strong>。`);
+          } else if (type === 'roof_hv') {
+            // 高壓屋頂型（含併高壓以上用戶內線）：扣除50kW免收，其餘630元/kW
+            const billableKw = Math.max(0, kw - 50);
+            baseFee = Math.round(billableKw * 630);
+            formulaLines.push(`• 適用「態樣2 高壓屋頂型（附件9）」：累計扣除 50kW 免收後，其餘按 <strong>630 元/kW</strong> 計收。`);
+            formulaLines.push(`• 計算式：50kW × 0 + (${kw} - 50)kW × 630 元/kW = <strong>${baseFee.toLocaleString()} 元</strong>`);
+          } else {
+            // 低壓屋頂型：0~<50kW 免收、50~<100kW 1,050元/kW、100~<500kW 1,470元/kW
+            const tier1 = Math.min(kw, 50);
+            const tier2 = Math.max(0, Math.min(kw, 100) - 50);
+            const tier3 = Math.max(0, kw - 100);
+            baseFee = Math.round(tier2 * 1050 + tier3 * 1470);
+            formulaLines.push(`• 適用「態樣2 低壓屋頂型累進費率（附件9）」：前50kW免收、50~<100kW按1,050元/kW、100kW以上按1,470元/kW。`);
+            formulaLines.push(`• 計算式：${tier1}kW×0 + ${tier2}kW×1,050 + ${tier3}kW×1,470 = <strong>${baseFee.toLocaleString()} 元</strong>`);
+          }
+        }
+      } else {
+        // ground_dist：地面型／水面型／非屋頂型（配電級）
+        baseFee = Math.round(kw * 2068);
+        formulaLines.push(`• 適用「態樣6/7（第4章第2節）」：非屋頂型再生能源，無論是否加強電力網，2.5km 內一律按均化單價 <strong>2,068 元/kW</strong> 計收。`);
+        formulaLines.push(`• 基本均化費：${kw.toLocaleString()} kW × 2,068 元/kW = ${baseFee.toLocaleString()} 元`);
+        const totalKm = ohKm + ugKm;
+        if (totalKm > 2.5) {
+          const overKm = totalKm - 2.5;
+          const avgRate = ((ohKm * 803) + (ugKm * 2484)) / totalKm;
+          const overFee = Math.round(kw * overKm * avgRate);
+          extraFee += overFee;
+          formulaLines.push(`• 超出 2.5km 部分（超出 ${overKm.toFixed(2)} km，架空803 / 地下2,484 元/kW-km）：加計 <strong>${overFee.toLocaleString()} 元</strong>`);
+        }
+      }
+
+      if (newTr && type !== 'no_sell') {
+        const trFee = Math.round(kw * 1005);
+        extraFee += trFee;
+        formulaLines.push(`• 併配電級低壓側新(換)裝變壓器（態樣5/8）：${kw} kW × 1,005 元/kW = <strong>${trFee.toLocaleString()} 元</strong>`);
+      }
+
+      if (proxyStepUp && type !== 'no_sell') {
+        const stepUpFee = Math.round(kw * 2880 + kw * ohKm * 803 + kw * ugKm * 2484);
+        extraFee += stepUpFee;
+        formulaLines.push(`• 委請台電代辦升高壓設備及線路（附件9第四點：升壓設備2,880元/kW + 線路架空803/地下2,484元/kW-km）：加計 <strong>${stepUpFee.toLocaleString()} 元</strong>`);
+      }
+
+      const grandTotal = baseFee + extraFee;
+      document.getElementById('feeResultBox').innerHTML = `
+        <div class="flex items-center justify-between border-b border-emerald-200 pb-2">
+          <span class="font-bold text-emerald-950 text-sm">預估併網／加強電力網工程費總計：</span>
+          <span class="font-mono font-bold text-lg text-emerald-800">NT$ ${grandTotal.toLocaleString()} 元</span>
+        </div>
+        <div class="space-y-1 text-slate-800 pt-1">
+          ${formulaLines.join('<br>')}
+        </div>
+      `;
+    }
+
+    // 分頁4 工具 2：面積合理性檢核（0.2kW/m²）＋ 併網審查作業費判定
+    function syncAreaFromSqm() {
+      const sqm = parseFloat(document.getElementById('area_sqm').value) || 0;
+      document.getElementById('area_ping').value = (sqm / 3.305785).toFixed(2);
+      evalAreaAndReviewFee();
+    }
+
+    function syncAreaFromPing() {
+      const ping = parseFloat(document.getElementById('area_ping').value) || 0;
+      document.getElementById('area_sqm').value = (ping * 3.305785).toFixed(1);
+      evalAreaAndReviewFee();
+    }
+
+    function evalAreaAndReviewFee() {
+      const sqm = Math.max(0, parseFloat(document.getElementById('area_sqm').value) || 0);
+      const kw = Math.max(0, parseFloat(document.getElementById('area_kw').value) || 0);
+      const conn = document.getElementById('rev_conn').value;
+      const overContract = document.getElementById('rev_overContract').checked;
+      const ehvRoof20MW = document.getElementById('rev_ehvRoof20MW').checked;
+
+      const maxKw = +(sqm * 0.2).toFixed(2);
+      const areaOk = kw <= maxKw;
+
+      // 審查作業費與系衝判定（第2章第2節三）
+      let reviewFee = '不收費 (0 元)';
+      let sisRequired = '免附系統衝擊分析報告（僅需檢討內線設計）';
+
+      if (conn === 'ext_lv') {
+        reviewFee = '不收費 (0 元)（第一次展延補收 1.8 萬元）';
+        sisRequired = '免附系統衝擊分析報告（僅需檢討內線設計）';
+      } else if (conn === 'ext_hv' || conn === 'booster') {
+        reviewFee = '新臺幣 85,000 元 (8.5 萬元)';
+        sisRequired = conn === 'booster'
+          ? '須檢附系衝分析（免電壓變動率檢討；若取得共同升壓站設置者借道同意書附件31或同一人者免系衝）'
+          : '須檢附系統衝擊分析報告（受理時可先附申請電網參數函文，函復後 2 週內補附）';
+      } else if (conn === 'ext_ehv') {
+        reviewFee = '新臺幣 340,000 元 (34 萬元)';
+        sisRequired = '須檢附系統衝擊分析報告（由系統規劃處審查）';
+      } else if (conn === 'in_lv_lv') {
+        reviewFee = '不收費 (0 元)';
+        sisRequired = '免附系統衝擊分析報告';
+      } else if (conn === 'in_hv_lv') {
+        reviewFee = overContract ? '新臺幣 85,000 元 (8.5 萬元)' : '不收費 (0 元)';
+        sisRequired = overContract ? '須檢附高壓系統衝擊分析報告（由區營業處審查）' : '未超過契約容量（或裝設防逆電驛+EMS），免附系衝報告';
+      } else if (conn === 'in_hv_hv') {
+        reviewFee = '新臺幣 85,000 元 (8.5 萬元)';
+        sisRequired = overContract ? '須檢附高壓系統衝擊分析報告（由區營業處審查）' : '未超過契約容量，免附系衝報告（仍收 8.5 萬元審查費）';
+      } else if (conn === 'in_ehv_lv') {
+        if (ehvRoof20MW) {
+          reviewFee = '不收費 (0 元)（第三型屋頂型光電累計<20MW特例）';
+          sisRequired = '免附系統衝擊分析報告';
+        } else {
+          reviewFee = overContract ? '新臺幣 340,000 元 (34 萬元)' : '不收費 (0 元)';
+          sisRequired = overContract ? '須檢附系衝分析報告（由系統規劃處審查）' : '未超過契約容量，免附系衝報告';
+        }
+      } else if (conn === 'in_ehv_hv') {
+        if (ehvRoof20MW) {
+          reviewFee = '新臺幣 85,000 元 (8.5 萬元)（按未超過契約容量計收）';
+          sisRequired = '免附系統衝擊分析報告';
+        } else {
+          reviewFee = overContract ? '新臺幣 340,000 元 (34 萬元)' : '新臺幣 85,000 元 (8.5 萬元)';
+          sisRequired = overContract ? '須檢附系衝分析報告（由系統規劃處審查）' : '未超過契約容量，免附系衝報告';
+        }
+      } else if (conn === 'in_ehv_ehv') {
+        reviewFee = '新臺幣 340,000 元 (34 萬元)';
+        sisRequired = overContract ? '須檢附系衝分析報告（由系統規劃處審查）' : '未超過契約容量，免附系衝報告（仍收 34 萬元審查費）';
+      }
+
+      document.getElementById('areaReviewResultBox').innerHTML = `
+        <div class="p-2.5 rounded-lg ${areaOk ? 'bg-emerald-100 text-emerald-950' : 'bg-rose-100 text-rose-950'} font-bold">
+          ${areaOk
+            ? `✓ 面積合理性合格：可鋪設面積 ${sqm.toLocaleString()} m² × 0.2 kW/m² = 最大上限 ${maxKw.toLocaleString()} kW（申設 ${kw} kW 符合規定）`
+            : `⚠️ 面積超標警告：可鋪設面積 ${sqm.toLocaleString()} m² × 0.2 kW/m² = 最大上限僅 ${maxKw.toLocaleString()} kW（申設 ${kw} kW 已超標，恐遭台電撤案！）`}
+        </div>
+        <div class="space-y-1 text-slate-800 pt-1">
+          <p>• <strong>受理時應繳併聯審查作業費：</strong><span class="font-bold text-sky-900">${reviewFee}</span></p>
+          <p>• <strong>系統衝擊分析報告檢附規定：</strong>${sisRequired}</p>
+        </div>
+      `;
+    }
+
+    // 分頁4 工具 3：再生能源併網關鍵期限倒數推算器
+    function addCalendarDays(baseStr, days) {
+      if (!baseStr) return '尚未輸入基準日';
+      const d = new Date(baseStr + 'T00:00:00');
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    function addMonths(baseStr, months) {
+      if (!baseStr) return '尚未輸入基準日';
+      const d = new Date(baseStr + 'T00:00:00');
+      d.setMonth(d.getMonth() + months);
+      return d.toISOString().split('T')[0];
+    }
+
+    function addWorkingDays(baseStr, workDays) {
+      if (!baseStr) return '尚未輸入基準日';
+      const d = new Date(baseStr + 'T00:00:00');
+      let added = 0;
+      while (added < workDays) {
+        d.setDate(d.getDate() + 1);
+        const day = d.getDay();
+        if (day !== 0 && day !== 6) added++;
+      }
+      return d.toISOString().split('T')[0];
+    }
+
+    function calcDeadlines() {
+      const opDate = document.getElementById('dl_opinionDate').value;
+      const coDate = document.getElementById('dl_consentDate').value;
+      const ctDate = document.getElementById('dl_contractDate').value;
+
+      appState.meta.opinionDate = opDate;
+      appState.meta.consentDate = coDate;
+      appState.meta.contractDate = ctDate;
+      saveStorage();
+
+      const cards = [
+        {
+          base: '基準日 1：審查意見書發文日',
+          title: '【地面型必辦】補附地主租約公證書封面影本（30 個工作天內）',
+          date: addWorkingDays(opDate, 30),
+          desc: '第三型地面型併配電系統逾期未提供租約公證書封面，台電逕予取消案件！',
+          color: 'rose'
+        },
+        {
+          base: '基準日 1：審查意見書發文日',
+          title: '【審查意見書展延】最遲申請展延期限（屆滿前 2 個月）',
+          date: addMonths(opDate, 10),
+          desc: `意見書效期 1 年（到期日 ${addMonths(opDate, 12)}），須於屆滿前 2 個月檢附實質開發證明申請展延（最多 2 次）。`,
+          color: 'amber'
+        },
+        {
+          base: '基準日 2：取得同意備案日',
+          title: '【太陽光電必辦】與台電簽訂「電能購售契約」期限（2 個月內）',
+          date: addMonths(coDate, 2),
+          desc: '太陽光電發電設備自同意備案日起 2 個月內須完成購售電契約簽訂（其他再生能源為 6 個月內）。',
+          color: 'emerald'
+        },
+        {
+          base: '基準日 3：購售電契約簽約日',
+          title: '【最終完工死線】完成併聯試運轉並取得「設備登記文件」（簽約起 1 年內）',
+          date: addMonths(ctDate, 12),
+          desc: '逾簽約日 1 年未取得設備登記且經廢止同意備案者，台電將終止購售電契約並解聯！',
+          color: 'purple'
+        },
+        {
+          base: '基準日 1：無使照/建照屋頂型',
+          title: '【屋頂型補件】補附使照/建照或農業/海岸容許文件（6 個月內）',
+          date: addMonths(opDate, 6),
+          desc: '受理時未附使照/建照之屋頂型案場，須於審查意見書核發後 6 個月內補附，否則自動失效。',
+          color: 'sky'
+        },
+        {
+          base: '基準日：核配函／掛表日',
+          title: '【光儲 & DREAMS】光儲14日換發意見書 ／ DREAMS裝表1個月上線',
+          date: '依核配函+14日 / 掛表+1月',
+          desc: '光儲競標得標者取得核配函14個日曆天內換發意見書；≥500kW案場裝表後1個月內須完成DREAMS回傳並交附表7。',
+          color: 'slate'
+        }
+      ];
+
+      document.getElementById('deadlineCardsOutput').innerHTML = cards.map(c => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 flex flex-col justify-between space-y-2">
+          <div>
+            <span class="text-xs font-bold text-slate-500 block">${c.base}</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-0.5">${c.title}</h4>
+          </div>
+          <div class="py-1.5 px-3 rounded-lg bg-white border border-slate-300 font-mono font-bold text-sm text-rose-700 text-center">
+            最遲期限：${c.date}
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">${c.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    // 匯出與匯入 JSON 備份
+    function exportProjectJSON() {
+      const str = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', str);
+      a.setAttribute('download', `再生能源併網與報竣工勾稽表_${appState.meta.siteName || '案場'}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('已匯出本案勾稽備份檔 (.json)', 'success');
+    }
+
+    function importProjectJSON(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          appState = { ...appState, ...parsed };
+          initCardStates();
+          syncAllUIToState();
+          renderChecklistCards();
+          renderPrintDocument();
+          calcDeadlines();
+          saveStorage();
+          showToast('已成功匯入專案勾稽資料！', 'success');
+        } catch (err) {
+          showToast('檔案格式錯誤，無法匯入');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function syncAllUIToState() {
+      setFontScale(appState.fontScale || 115, true);
+      if (appState.printFontSize) {
+        document.documentElement.style.setProperty('--print-font-size', appState.printFontSize);
+        document.querySelectorAll('input[name="printFontSize"]').forEach(r => {
+          r.checked = (r.value === appState.printFontSize);
+        });
+      }
+
+      syncOptionsToCheckboxes();
+      updateSiteTypeUI();
+
+      document.getElementById('meta_siteName').value = appState.meta.siteName || '';
+      document.getElementById('meta_caseNo').value = appState.meta.caseNo || '';
+      document.getElementById('meta_meterNo').value = appState.meta.meterNo || '';
+      document.getElementById('meta_applicant').value = appState.meta.applicant || '';
+      document.getElementById('meta_contractor').value = appState.meta.contractor || '';
+      document.getElementById('meta_targetDate').value = appState.meta.targetDate || '';
+
+      document.getElementById('dl_opinionDate').value = appState.meta.opinionDate || getOffsetDateStr(-10);
+      document.getElementById('dl_consentDate').value = appState.meta.consentDate || getOffsetDateStr(15);
+      document.getElementById('dl_contractDate').value = appState.meta.contractDate || getOffsetDateStr(35);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    window.onload = function() {
+      loadStorage();
+      syncAllUIToState();
+      switchTab('overview');
+      renderChecklistCards();
+      calcGridFee();
+      evalAreaAndReviewFee();
+      calcDeadlines();
+      renderPrintDocument();
+    };
+  </script>
+</body>
+</html>
